@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, GraduationCap, Users, BookOpen, Layers, X, ArrowRight } from 'lucide-react';
 import { userService } from '../../services/userService';
@@ -7,19 +7,33 @@ export const CommandPalette = ({ isOpen, onClose }) => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState({ students: [], teachers: [], classes: [], subjects: [] });
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef(null);
   const navigate = useNavigate();
 
+  // Escape key listener to close palette
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        if (isOpen) onClose();
-        else setQuery('');
+      if (e.key === 'Escape') {
+        onClose();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
+
+  // Focus input when opened
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        if (inputRef.current) inputRef.current.focus();
+      }, 50);
+    } else {
+      setQuery('');
+      setResults({ students: [], teachers: [], classes: [], subjects: [] });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (!query.trim()) {
@@ -30,7 +44,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
       setLoading(true);
       try {
         const res = await userService.searchGlobal(query);
-        setResults(res);
+        setResults(res || { students: [], teachers: [], classes: [], subjects: [] });
       } catch (e) {
         console.error(e);
       } finally {
@@ -48,10 +62,10 @@ export const CommandPalette = ({ isOpen, onClose }) => {
   };
 
   const hasResults =
-    results.students.length > 0 ||
-    results.teachers.length > 0 ||
-    results.classes.length > 0 ||
-    results.subjects.length > 0;
+    (results.students && results.students.length > 0) ||
+    (results.teachers && results.teachers.length > 0) ||
+    (results.classes && results.classes.length > 0) ||
+    (results.subjects && results.subjects.length > 0);
 
   return (
     <div className="fixed inset-0 z-[100] overflow-y-auto">
@@ -65,17 +79,29 @@ export const CommandPalette = ({ isOpen, onClose }) => {
         <div className="relative w-full max-w-xl transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all border border-slate-200 animate-in zoom-in-95">
           {/* Search Input Bar */}
           <div className="relative flex items-center border-b border-slate-100 px-4 py-3.5">
-            <Search className="w-5 h-5 text-slate-400 mr-3" />
+            <Search className="w-5 h-5 text-slate-400 mr-3 shrink-0" />
             <input
+              ref={inputRef}
               type="text"
-              autoFocus
               placeholder="Search students, teachers, classes, subjects... (Ctrl+K)"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="w-full bg-transparent text-sm font-medium text-slate-900 placeholder-slate-400 outline-none"
             />
-            {query && (
-              <button onClick={() => setQuery('')} className="p-1 text-slate-400 hover:text-slate-600">
+            {query ? (
+              <button
+                type="button"
+                onClick={() => setQuery('')}
+                className="p-1 text-slate-400 hover:text-slate-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={onClose}
+                className="p-1 text-slate-400 hover:text-slate-600"
+              >
                 <X className="w-4 h-4" />
               </button>
             )}
@@ -97,7 +123,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
 
             {!loading && hasResults && (
               <div className="space-y-3">
-                {results.students.length > 0 && (
+                {results.students && results.students.length > 0 && (
                   <div>
                     <h4 className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                       <GraduationCap className="w-3.5 h-3.5 text-brand-600" />
@@ -119,7 +145,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
                   </div>
                 )}
 
-                {results.teachers.length > 0 && (
+                {results.teachers && results.teachers.length > 0 && (
                   <div>
                     <h4 className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                       <Users className="w-3.5 h-3.5 text-emerald-600" />
@@ -141,7 +167,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
                   </div>
                 )}
 
-                {results.classes.length > 0 && (
+                {results.classes && results.classes.length > 0 && (
                   <div>
                     <h4 className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                       <Layers className="w-3.5 h-3.5 text-amber-600" />
@@ -160,7 +186,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
                   </div>
                 )}
 
-                {results.subjects.length > 0 && (
+                {results.subjects && results.subjects.length > 0 && (
                   <div>
                     <h4 className="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                       <BookOpen className="w-3.5 h-3.5 text-blue-600" />

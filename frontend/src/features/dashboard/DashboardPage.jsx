@@ -7,13 +7,13 @@ import { AdminDashboard } from './AdminDashboard';
 export const DashboardPage = () => {
   const { user } = useAuth();
 
-  const role = (user?.role || user?.role_id || 'School Administrator').toLowerCase();
+  const roleStr = String(user?.role || user?.role_id || 'School Administrator').toLowerCase();
 
-  if (role.includes('teacher')) {
+  if (roleStr.includes('teacher')) {
     return <TeacherDashboard />;
   }
 
-  if (role.includes('student')) {
+  if (roleStr.includes('student')) {
     return <StudentDashboard />;
   }
 

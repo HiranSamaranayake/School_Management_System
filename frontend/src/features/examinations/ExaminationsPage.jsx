@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Award, FileText, CheckCircle2, Edit2, Save, Printer, Plus, Eye, AlertCircle } from 'lucide-react';
+import { Award, FileText, CheckCircle2, Edit2, Save, Printer, Plus, Trash2, Eye } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Tabs } from '../../components/ui/Tabs';
 import { Card } from '../../components/ui/Card';
@@ -9,8 +9,8 @@ import { Table } from '../../components/ui/Table';
 import { examinationService } from '../../services/examinationService';
 import { useToast } from '../../app/context/ToastContext';
 import { PrintableReportCardModal } from '../../components/modals/PrintableReportCardModal';
-import { Modal } from '../../components/ui/Modal';
-import { Input } from '../../components/ui/Input';
+import { CreateExamModal } from '../../components/modals/CreateExamModal';
+import { ExamDetailsModal } from '../../components/modals/ExamDetailsModal';
 import { Select } from '../../components/ui/Select';
 import { formatDate } from '../../utils/formatters';
 import { validateMarks } from '../../utils/validators';
@@ -23,6 +23,8 @@ export const ExaminationsPage = () => {
   const [examResults, setExamResults] = useState([]);
   const [gradingScale, setGradingScale] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedDetailsExam, setSelectedDetailsExam] = useState(null);
 
   // Marks Entry State
   const [selectedExam, setSelectedExam] = useState('EXM-2026-T1');
@@ -63,7 +65,6 @@ export const ExaminationsPage = () => {
   };
 
   const handlePublishResults = async () => {
-    // Check if any mark has validation errors
     const hasErrors = marksGrid.some(m => validateMarks(m.marks) !== null);
     if (hasErrors) {
       addToast('Validation Error', 'Please ensure all marks are numbers between 0 and 100.', 'danger');
@@ -78,6 +79,17 @@ export const ExaminationsPage = () => {
       addToast('Error', e.message, 'danger');
     } finally {
       setSubmittingMarks(false);
+    }
+  };
+
+  const handleDeleteExamDirect = async (id, name) => {
+    if (!window.confirm(`Are you sure you want to delete "${name}"?`)) return;
+    try {
+      await examinationService.deleteExam(id);
+      setExams(prev => prev.filter(e => e.exam_id !== id));
+      addToast('Exam Deleted', `Successfully deleted ${name}`, 'success');
+    } catch (err) {
+      addToast('Error', err.message || 'Failed to delete exam', 'danger');
     }
   };
 
@@ -114,7 +126,17 @@ export const ExaminationsPage = () => {
     <div className="space-y-6 text-left">
       <PageHeader
         title="Examinations & Results"
-        subtitle="Manage term exams, record subject marks with validation, and issue official report cards"
+        subtitle="Manage term exams, schedule assessments, record marks with validation, and issue report cards"
+        action={
+          <Button
+            variant="primary"
+            size="sm"
+            icon={Plus}
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            Create Examination
+          </Button>
+        }
       />
 
       <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
@@ -122,6 +144,18 @@ export const ExaminationsPage = () => {
       {/* Tab 1: Examinations List */}
       {activeTab === 'exams' && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-slate-800">Scheduled Institutional Examinations</h3>
+            <Button
+              variant="outline"
+              size="xs"
+              icon={Plus}
+              onClick={() => setIsCreateModalOpen(true)}
+            >
+              + Create Examination
+            </Button>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {exams.map((ex) => (
               <div key={ex.exam_id} className="p-5 bg-white border border-slate-200 rounded-2xl shadow-subtle space-y-3">
@@ -136,7 +170,23 @@ export const ExaminationsPage = () => {
                 </div>
                 <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
                   <span className="text-slate-400">ID: {ex.exam_id}</span>
-                  <Button variant="outline" size="xs">View Details</Button>
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      variant="outline"
+                      size="xs"
+                      icon={Eye}
+                      onClick={() => setSelectedDetailsExam(ex)}
+                    >
+                      View Details
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="xs"
+                      icon={Trash2}
+                      onClick={() => handleDeleteExamDirect(ex.exam_id, ex.exam_name)}
+                      title="Delete Examination"
+                    />
+                  </div>
                 </div>
               </div>
             ))}
@@ -256,6 +306,20 @@ export const ExaminationsPage = () => {
           />
         </Card>
       )}
+
+      {/* Modals */}
+      <CreateExamModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={fetchData}
+      />
+
+      <ExamDetailsModal
+        isOpen={!!selectedDetailsExam}
+        onClose={() => setSelectedDetailsExam(null)}
+        exam={selectedDetailsExam}
+        onDeleteSuccess={(deletedId) => setExams(prev => prev.filter(e => e.exam_id !== deletedId))}
+      />
 
       <PrintableReportCardModal
         isOpen={!!reportCardStudent}

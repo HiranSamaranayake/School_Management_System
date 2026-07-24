@@ -1,29 +1,23 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import { ShieldCheck, Sparkles, School, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Sparkles } from 'lucide-react';
+import { Logo } from '../components/ui/Logo';
 
 export const AuthLayout = () => {
   return (
     <div className="min-h-screen flex bg-slate-950 text-slate-100 selection:bg-brand-500 selection:text-white">
       {/* Left Branding Hero Section */}
       <div className="hidden lg:flex flex-1 relative bg-gradient-to-br from-slate-900 via-slate-950 to-brand-950 p-12 flex-col justify-between overflow-hidden border-r border-slate-800">
-        {/* Background ambient lighting */}
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl" />
         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl" />
 
         {/* Top Header */}
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-brand-600/30">
-            E
-          </div>
-          <div>
-            <span className="font-bold text-xl text-white tracking-tight">EduSphere</span>
-            <p className="text-xs text-brand-300">Modern School Management, Simplified.</p>
-          </div>
+        <div className="relative z-10">
+          <Logo size="lg" variant="light" />
         </div>
 
         {/* Hero Copy & SaaS Preview Graphic */}
-        <div className="relative z-10 max-w-lg my-auto space-y-6">
+        <div className="relative z-10 max-w-lg my-auto space-y-6 text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Multi-Tenant Enterprise School Cloud</span>
@@ -34,7 +28,7 @@ export const AuthLayout = () => {
           </h1>
 
           <p className="text-sm text-slate-400 leading-relaxed">
-            EduSphere unifies student administration, teacher allocations, attendance registers, examination grading, and executive analytics into a seamless, high-performance workspace.
+            EduSphere unifies student administration, teacher allocations, attendance registers, examination grading, and executive analytics into a seamless workspace.
           </p>
 
           <div className="grid grid-cols-2 gap-4 pt-4">
@@ -58,7 +52,7 @@ export const AuthLayout = () => {
         </div>
       </div>
 
-      {/* Right Login Card Container */}
+      {/* Right Login Container */}
       <div className="flex-1 flex items-center justify-center p-6 bg-slate-950">
         <div className="w-full max-w-md">
           <Outlet />

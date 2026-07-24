@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Menu,
@@ -14,7 +14,8 @@ import {
   Users,
   Layers,
   Clock,
-  FileCheck
+  FileCheck,
+  Home
 } from 'lucide-react';
 import { useAuth } from '../../app/context/AuthContext';
 import { useNotifications } from '../../app/context/NotificationContext';
@@ -30,6 +31,18 @@ export const Header = ({ onOpenMobileMenu }) => {
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Global Ctrl+K / Cmd+K keyboard shortcut listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault();
+        setIsCommandOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleSignOut = async () => {
     await logout();
     navigate('/login');
@@ -44,6 +57,7 @@ export const Header = ({ onOpenMobileMenu }) => {
   ];
 
   const profileMenuItems = [
+    { label: 'Public Home Page', icon: Home, onClick: () => navigate('/') },
     { label: 'My Profile', icon: User, onClick: () => navigate('/administration') },
     { label: 'Account Settings', icon: Settings, onClick: () => navigate('/administration') },
     { label: 'Help Center', icon: HelpCircle, onClick: () => window.open('https://edusphere.help', '_blank') },
@@ -64,10 +78,22 @@ export const Header = ({ onOpenMobileMenu }) => {
             <Menu className="w-5 h-5" />
           </button>
 
-          {/* Quick Command Bar */}
+          {/* Go to Home Page Action Button */}
           <button
+            type="button"
+            onClick={() => navigate('/')}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all"
+            title="Go to Public Home Page"
+          >
+            <Home className="w-3.5 h-3.5 text-brand-600" />
+            <span className="hidden sm:inline">Go to Home Page</span>
+          </button>
+
+          {/* Quick Command Bar Search Field */}
+          <button
+            type="button"
             onClick={() => setIsCommandOpen(true)}
-            className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100/80 transition-all text-xs w-64 md:w-80"
+            className="hidden md:flex items-center gap-3 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100/80 transition-all text-xs w-64 md:w-72"
           >
             <Search className="w-4 h-4 text-slate-400" />
             <span className="flex-1 text-left">Search anything in EduSphere...</span>
@@ -81,8 +107,9 @@ export const Header = ({ onOpenMobileMenu }) => {
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Search icon mobile */}
           <button
+            type="button"
             onClick={() => setIsCommandOpen(true)}
-            className="sm:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
           >
             <Search className="w-5 h-5" />
           </button>
@@ -102,6 +129,7 @@ export const Header = ({ onOpenMobileMenu }) => {
 
           {/* Notification Bell */}
           <button
+            type="button"
             onClick={() => setIsNotifOpen(true)}
             className="relative p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
             title="Notifications"
@@ -114,6 +142,7 @@ export const Header = ({ onOpenMobileMenu }) => {
 
           {/* Help Center */}
           <button
+            type="button"
             onClick={() => navigate('/administration')}
             className="hidden md:flex p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
             title="Help & Support"

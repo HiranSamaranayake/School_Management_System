@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, School, ArrowRight, ShieldCheck, AlertCircle, UserPlus, GraduationCap, Users, Shield } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, UserPlus, GraduationCap, Users, Shield } from 'lucide-react';
 import { useAuth } from '../../app/context/AuthContext';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
@@ -15,7 +15,6 @@ export const LoginPage = () => {
   const { login } = useAuth();
   const { addToast } = useToast();
 
-  const [schoolCode, setSchoolCode] = useState('GIC001');
   const [email, setEmail] = useState('admin@greenfield.edu.lk');
   const [password, setPassword] = useState('demo1234');
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +27,6 @@ export const LoginPage = () => {
 
   const validate = () => {
     const newErrors = {};
-    if (!schoolCode.trim()) newErrors.schoolCode = "School workspace code is required (e.g. GIC001).";
     const emailErr = validateEmail(email);
     if (emailErr) newErrors.email = emailErr;
     const passErr = validatePassword(password);
@@ -45,8 +43,9 @@ export const LoginPage = () => {
 
     setLoading(true);
     try {
-      await login(email, password);
-      addToast('Welcome Back!', `Logged into Greenfield International College (${schoolCode})`, 'success');
+      const res = await login(email, password);
+      const userRole = res.user?.role || res.user?.role_id || 'School Administrator';
+      addToast('Authenticated Successfully!', `Logged in as ${res.user?.first_name || 'User'} (${userRole})`, 'success');
       navigate('/dashboard');
     } catch (err) {
       setErrorMsg(err.message || 'Invalid email address or password.');
@@ -59,23 +58,23 @@ export const LoginPage = () => {
     if (roleType === 'admin') {
       setEmail('admin@greenfield.edu.lk');
       setPassword('demo1234');
-      addToast('Role Selected: School Admin', 'Credentials set for Admin Dashboard', 'info');
+      addToast('Selected Role: Admin', 'Set credentials for Admin Dashboard', 'info');
     } else if (roleType === 'teacher') {
       setEmail('teacher@greenfield.edu.lk');
       setPassword('demo1234');
-      addToast('Role Selected: Teacher', 'Credentials set for Teacher Portal', 'info');
+      addToast('Selected Role: Teacher', 'Set credentials for Teacher Portal', 'info');
     } else if (roleType === 'student') {
       setEmail('student@greenfield.edu.lk');
       setPassword('demo1234');
-      addToast('Role Selected: Student', 'Credentials set for Student & Parent Portal', 'info');
+      addToast('Selected Role: Student', 'Set credentials for Student Portal', 'info');
     }
-    setSchoolCode('GIC001');
     setErrors({});
+    setErrorMsg('');
   };
 
   return (
     <div className="w-full space-y-6">
-      {/* Brand Header Mobile */}
+      {/* Mobile Brand Header */}
       <div className="lg:hidden text-center space-y-2 mb-6">
         <div className="inline-flex w-10 h-10 rounded-xl bg-brand-600 items-center justify-center text-white font-bold text-xl shadow-md">
           E
@@ -84,12 +83,12 @@ export const LoginPage = () => {
         <p className="text-xs text-slate-400">Greenfield International College</p>
       </div>
 
-      {/* Login Form Card */}
+      {/* Login Card */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 text-left">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-white tracking-tight">Sign in to your workspace</h2>
-            <p className="text-xs text-slate-400 mt-1">Select demo role or enter account credentials</p>
+            <h2 className="text-xl font-bold text-white tracking-tight">Sign in to EduSphere</h2>
+            <p className="text-xs text-slate-400 mt-1">Enter your email and password to access your dashboard</p>
           </div>
           <Button
             type="button"
@@ -103,10 +102,10 @@ export const LoginPage = () => {
           </Button>
         </div>
 
-        {/* Demo Role Switcher Quick Selector */}
+        {/* 1-Click Role Switcher */}
         <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800 space-y-2">
           <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-            1-Click Demo Role Selector
+            Select Role Demo Credentials
           </span>
           <div className="grid grid-cols-3 gap-2">
             <button
@@ -158,17 +157,6 @@ export const LoginPage = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-          <Input
-            label="School Workspace Code"
-            icon={School}
-            value={schoolCode}
-            onChange={(e) => { setSchoolCode(e.target.value); if (errors.schoolCode) setErrors(p => ({ ...p, schoolCode: null })); }}
-            placeholder="e.g. GIC001"
-            error={errors.schoolCode}
-            required
-            className="bg-slate-950 border-slate-800 text-white placeholder-slate-500"
-          />
-
           <Input
             label="Email"
             type="email"
@@ -226,18 +214,18 @@ export const LoginPage = () => {
             aria-label="Login"
             className="w-full mt-2 font-bold shadow-lg shadow-brand-600/30"
           >
-            Sign in securely
+            Login
           </Button>
         </form>
 
-        {/* Register Helper */}
+        {/* Register User helper link */}
         <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs">
           <button
             type="button"
             onClick={() => setIsRegisterModalOpen(true)}
             className="text-slate-400 hover:text-white font-medium flex items-center gap-1"
           >
-            <UserPlus className="w-3.5 h-3.5 text-brand-400" /> New user? Register Account
+            <UserPlus className="w-3.5 h-3.5 text-brand-400" /> Need a user account? Register User
           </button>
         </div>
       </div>
@@ -261,11 +249,11 @@ export const LoginPage = () => {
       >
         <div className="space-y-4 text-xs text-slate-600 text-left">
           <p>
-            To reset your EduSphere administrator password, please contact the EduSphere IT support desk or email <strong className="text-slate-900">support@edusphere.cloud</strong> with your school registration details.
+            To reset your EduSphere password, contact the IT support desk or email <strong className="text-slate-900">support@edusphere.cloud</strong> with your registered email.
           </p>
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="font-bold text-slate-800 block">School Code: GIC001</span>
-            <span className="text-slate-500">Support Line: +94 11 258 9641</span>
+            <span className="font-bold text-slate-800 block">Support Desk</span>
+            <span className="text-slate-500">Phone: +94 11 258 9641</span>
           </div>
         </div>
       </Modal>

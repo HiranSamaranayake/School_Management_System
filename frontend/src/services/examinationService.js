@@ -11,6 +11,26 @@ export const examinationService = {
     }
   },
 
+  createExam: async (examData) => {
+    if (isMockMode()) return await mockHandlers.createExam(examData);
+    try {
+      const res = await apiClient.post('/exams', examData);
+      return res.data;
+    } catch (e) {
+      return await mockHandlers.createExam(examData);
+    }
+  },
+
+  deleteExam: async (id) => {
+    if (isMockMode()) return await mockHandlers.deleteExam(id);
+    try {
+      const res = await apiClient.delete(`/exams/${id}`);
+      return res.data;
+    } catch (e) {
+      return await mockHandlers.deleteExam(id);
+    }
+  },
+
   getExamResults: async (examId, classId, studentId) => {
     if (isMockMode()) return await mockHandlers.getExamResults(examId, classId, studentId);
     try {

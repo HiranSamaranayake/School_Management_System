@@ -1,7 +1,6 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import {
-  X,
   LayoutDashboard,
   GraduationCap,
   Users,
@@ -10,56 +9,65 @@ import {
   Award,
   BarChart3,
   Settings,
-  School,
-  HelpCircle
+  X,
+  School
 } from 'lucide-react';
 import { useAuth } from '../../app/context/AuthContext';
 
 export const MobileDrawer = ({ isOpen, onClose }) => {
-  const { school, academicYear } = useAuth();
-  const location = useLocation();
-
+  const { user, school } = useAuth();
   if (!isOpen) return null;
 
-  const navigation = [
-    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { label: 'Students', path: '/students', icon: GraduationCap },
-    { label: 'Teachers', path: '/teachers', icon: Users },
-    { label: 'Academic Management', path: '/academics', icon: BookOpen },
+  const roleStr = String(user?.role_id || user?.role || 'School Administrator').toLowerCase();
+
+  const isTeacher = roleStr.includes('teacher');
+  const isStudent = roleStr.includes('student');
+
+  let items = [
+    { label: 'Admin Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { label: 'Students Directory', path: '/students', icon: GraduationCap },
+    { label: 'Teachers Directory', path: '/teachers', icon: Users },
+    { label: 'Academic Mgmt', path: '/academics', icon: BookOpen },
     { label: 'Attendance', path: '/attendance', icon: CalendarCheck },
-    { label: 'Examinations & Results', path: '/examinations', icon: Award },
-    { label: 'Reports', path: '/reports', icon: BarChart3 },
-    { label: 'Administration & Settings', path: '/administration', icon: Settings },
+    { label: 'Examinations', path: '/examinations', icon: Award },
+    { label: 'Reports & Analytics', path: '/reports', icon: BarChart3 },
+    { label: 'Administration', path: '/administration', icon: Settings },
   ];
 
-  return (
-    <div className="fixed inset-0 z-50 lg:hidden overflow-hidden">
-      <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={onClose} />
+  if (isStudent) {
+    items = [
+      { label: 'My Dashboard', path: '/dashboard', icon: LayoutDashboard },
+      { label: 'My Attendance', path: '/attendance', icon: CalendarCheck },
+      { label: 'My Results & Cards', path: '/examinations', icon: Award },
+    ];
+  } else if (isTeacher) {
+    items = [
+      { label: 'Teacher Dashboard', path: '/dashboard', icon: LayoutDashboard },
+      { label: 'My Class Roster', path: '/students', icon: GraduationCap },
+      { label: 'Mark Attendance', path: '/attendance', icon: CalendarCheck },
+      { label: 'Record Exam Marks', path: '/examinations', icon: Award },
+    ];
+  }
 
-      <div className="fixed inset-y-0 left-0 max-w-xs w-full bg-slate-900 text-slate-300 shadow-2xl flex flex-col justify-between border-r border-slate-800 animate-in slide-in-from-left duration-300">
+  return (
+    <div className="fixed inset-0 z-50 lg:hidden">
+      <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={onClose} />
+      <div className="fixed inset-y-0 left-0 w-72 bg-slate-900 text-slate-300 p-4 flex flex-col justify-between shadow-2xl z-50">
         <div>
-          <div className="flex items-center justify-between h-16 px-4 border-b border-slate-800">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-base">
+          <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold">
                 E
               </div>
-              <span className="font-bold text-base text-white">EduSphere</span>
+              <span className="font-bold text-white text-base">EduSphere</span>
             </div>
-            <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-white">
+            <button onClick={onClose} className="p-1 rounded-lg text-slate-400 hover:text-white">
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          <div className="p-3 mx-3 my-3 rounded-xl bg-slate-800 border border-slate-700 flex items-center gap-3">
-            <School className="w-5 h-5 text-brand-400 shrink-0" />
-            <div className="min-w-0">
-              <h4 className="text-xs font-semibold text-white truncate">{school?.name}</h4>
-              <p className="text-[10px] text-slate-400">{school?.code} • {academicYear}</p>
-            </div>
-          </div>
-
-          <div className="px-3 py-2 space-y-1">
-            {navigation.map((item) => {
+          <div className="mt-4 space-y-1">
+            {items.map((item) => {
               const Icon = item.icon;
               return (
                 <NavLink
@@ -67,8 +75,8 @@ export const MobileDrawer = ({ isOpen, onClose }) => {
                   to={item.path}
                   onClick={onClose}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors ${
-                      isActive ? 'bg-brand-600 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${
+                      isActive ? 'bg-brand-600 text-white font-bold' : 'text-slate-400 hover:bg-slate-800'
                     }`
                   }
                 >
@@ -80,8 +88,8 @@ export const MobileDrawer = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <div className="p-4 border-t border-slate-800">
-          <p className="text-[11px] text-slate-500 text-center">EduSphere SaaS © 2026</p>
+        <div className="pt-4 border-t border-slate-800 text-xs text-slate-500">
+          Logged in as: <strong className="text-white capitalize">{user?.first_name || 'User'} ({user?.role || 'Admin'})</strong>
         </div>
       </div>
     </div>

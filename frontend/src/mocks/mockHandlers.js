@@ -274,6 +274,25 @@ export const mockHandlers = {
 
   // Exams
   getExams: async () => store.exams,
+  createExam: async (examData) => {
+    await delay(50);
+    const newExam = {
+      ...examData,
+      exam_id: `EXM-2026-T${store.exams.length + 1}`,
+      classes: examData.classes || ['Grade 10 - Science', 'Grade 11 - Science'],
+      status: examData.status || 'Upcoming'
+    };
+    store.exams = [newExam, ...store.exams];
+    store.save('exams', store.exams);
+    mockHandlers.addAuditLog('Examinations', 'Exam Created', `Created examination ${newExam.exam_name}`);
+    return newExam;
+  },
+  deleteExam: async (id) => {
+    await delay(50);
+    store.exams = store.exams.filter(e => e.exam_id !== id);
+    store.save('exams', store.exams);
+    return { success: true };
+  },
   getExamResults: async () => store.examResults,
   saveExamResults: async () => ({ success: true }),
   getGradingScale: async () => store.gradingScale,
@@ -290,5 +309,43 @@ export const mockHandlers = {
   getSubscription: async () => store.subscription,
   getNotifications: async () => store.notifications,
   markAllNotificationsRead: async () => store.notifications,
-  searchGlobal: async () => ({ students: [], teachers: [], classes: [], subjects: [] })
+
+  // Global Search Filter Handler
+  searchGlobal: async (query = '') => {
+    await delay(30);
+    const term = (query || '').toLowerCase().trim();
+    if (!term) {
+      return { students: [], teachers: [], classes: [], subjects: [] };
+    }
+
+    const students = (store.students || []).filter(s =>
+      (s.first_name && s.first_name.toLowerCase().includes(term)) ||
+      (s.last_name && s.last_name.toLowerCase().includes(term)) ||
+      (s.name && s.name.toLowerCase().includes(term)) ||
+      (s.admission_no && s.admission_no.toLowerCase().includes(term)) ||
+      (s.grade_level && s.grade_level.toLowerCase().includes(term)) ||
+      (s.class_name && s.class_name.toLowerCase().includes(term))
+    ).slice(0, 5);
+
+    const teachers = (store.teachers || []).filter(t =>
+      (t.first_name && t.first_name.toLowerCase().includes(term)) ||
+      (t.last_name && t.last_name.toLowerCase().includes(term)) ||
+      (t.teacher_reg_no && t.teacher_reg_no.toLowerCase().includes(term)) ||
+      (t.assigned_subjects && Array.isArray(t.assigned_subjects) && t.assigned_subjects.some(sub => sub.toLowerCase().includes(term)))
+    ).slice(0, 5);
+
+    const classes = (store.classes || []).filter(c =>
+      (c.class_name && c.class_name.toLowerCase().includes(term)) ||
+      (c.grade_level && c.grade_level.toLowerCase().includes(term)) ||
+      (c.medium && c.medium.toLowerCase().includes(term))
+    ).slice(0, 5);
+
+    const subjects = (store.subjects || []).filter(sub =>
+      (sub.subject_name && sub.subject_name.toLowerCase().includes(term)) ||
+      (sub.subject_code && sub.subject_code.toLowerCase().includes(term)) ||
+      (sub.category && sub.category.toLowerCase().includes(term))
+    ).slice(0, 5);
+
+    return { students, teachers, classes, subjects };
+  }
 };

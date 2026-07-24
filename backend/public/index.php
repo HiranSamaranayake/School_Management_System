@@ -94,6 +94,10 @@ try {
     // Exams
     elseif ($method === 'GET' && $path === '/exams') {
         (new ExaminationController())->getExams();
+    } elseif ($method === 'POST' && $path === '/exams') {
+        (new ExaminationController())->createExam();
+    } elseif ($method === 'DELETE' && preg_match('#^/exams/([A-Za-z0-9-]+)$#', $path, $m)) {
+        (new ExaminationController())->deleteExam($m[1]);
     } elseif ($method === 'GET' && $path === '/exam-results') {
         (new ExaminationController())->getExamResults();
     } elseif ($method === 'POST' && $path === '/exam-results/batch') {

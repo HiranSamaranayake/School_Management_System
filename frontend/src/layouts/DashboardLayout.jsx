@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
+import { useAuth } from '../app/context/AuthContext';
 import { Sidebar } from '../components/layout/Sidebar';
 import { Header } from '../components/layout/Header';
 import { MobileDrawer } from '../components/layout/MobileDrawer';
@@ -7,8 +8,13 @@ import { NotificationDrawer } from '../components/layout/NotificationDrawer';
 import { QuickCreateModal } from '../components/modals/QuickCreateModal';
 
 export const DashboardLayout = () => {
+  const { isAuthenticated } = useAuth();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">

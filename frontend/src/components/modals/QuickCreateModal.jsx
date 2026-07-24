@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useQuickCreate } from '../../app/context/QuickCreateContext';
 import { AddStudentModal } from './AddStudentModal';
 import { AddTeacherModal } from './AddTeacherModal';
+import { CreateExamModal } from './CreateExamModal';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Button } from '../ui/Button';
 import { academicService } from '../../services/academicService';
-import { attendanceService } from '../../services/attendanceService';
 import { useToast } from '../../app/context/ToastContext';
 
 export const QuickCreateModal = () => {
@@ -28,6 +28,10 @@ export const QuickCreateModal = () => {
 
   if (activeType === 'teacher') {
     return <AddTeacherModal isOpen={isOpen} onClose={closeQuickCreate} onSuccess={() => closeQuickCreate()} />;
+  }
+
+  if (activeType === 'exam') {
+    return <CreateExamModal isOpen={isOpen} onClose={closeQuickCreate} onSuccess={() => closeQuickCreate()} />;
   }
 
   const handleCreateClass = async (e) => {
