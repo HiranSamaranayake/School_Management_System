@@ -2,12 +2,12 @@
 
 Welcome to **EduSphere**, a comprehensive, enterprise-grade School Management SaaS System built for K-12 schools, colleges, and educational institutions.
 
-> 📖 **Looking for the End-User Operating Manual?**  
+>  **Looking for the End-User Operating Manual?**  
 > Check out the step-by-step [USER_MANUAL.md](USER_MANUAL.md) for full instructions on how Administrators, Teachers, Students, and Parents use the platform.
 
 ---
 
-## 🚀 Quick Start & Login Credentials
+##  Quick Start & Login Credentials
 
 You can test every role immediately using the pre-configured demo credentials below:
 
