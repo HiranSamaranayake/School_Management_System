@@ -14,6 +14,8 @@ import { AttendancePage } from '../../features/attendance/AttendancePage';
 import { ExaminationsPage } from '../../features/examinations/ExaminationsPage';
 import { ReportsPage } from '../../features/reports/ReportsPage';
 import { AdministrationPage } from '../../features/administration/AdministrationPage';
+import { ProfilePage } from '../../features/auth/ProfilePage';
+import { SettingsPage } from '../../features/auth/SettingsPage';
 
 export const AppRouter = () => {
   return (
@@ -32,6 +34,8 @@ export const AppRouter = () => {
         {/* Authenticated Dashboard Application Layout */}
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/students" element={<StudentsPage />} />
           <Route path="/teachers" element={<TeachersPage />} />
           <Route path="/academics" element={<AcademicsPage />} />

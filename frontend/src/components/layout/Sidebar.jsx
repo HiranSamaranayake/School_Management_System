@@ -12,7 +12,8 @@ import {
   ChevronLeft,
   ChevronRight,
   School,
-  Home
+  Home,
+  User
 } from 'lucide-react';
 import { useAuth } from '../../app/context/AuthContext';
 import { Logo } from '../ui/Logo';
@@ -40,6 +41,13 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
           { label: 'My Results & Cards', path: '/examinations', icon: Award },
         ],
       },
+      {
+        group: 'ACCOUNT & PROFILE',
+        items: [
+          { label: 'My Profile', path: '/profile', icon: User },
+          { label: 'Account Settings', path: '/settings', icon: Settings },
+        ],
+      },
     ];
   } else if (isTeacher) {
     navigationGroups = [
@@ -51,6 +59,13 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
           { label: 'My Class Roster', path: '/students', icon: GraduationCap },
           { label: 'Mark Attendance', path: '/attendance', icon: CalendarCheck },
           { label: 'Record Exam Marks', path: '/examinations', icon: Award },
+        ],
+      },
+      {
+        group: 'ACCOUNT & PROFILE',
+        items: [
+          { label: 'My Profile', path: '/profile', icon: User },
+          { label: 'Account Settings', path: '/settings', icon: Settings },
         ],
       },
     ];
@@ -94,6 +109,8 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse }) => {
         group: 'SYSTEM',
         items: [
           { label: 'Administration', path: '/administration', icon: Settings },
+          { label: 'My Profile', path: '/profile', icon: User },
+          { label: 'Account Settings', path: '/settings', icon: Settings },
         ],
       },
     ];

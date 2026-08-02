@@ -58,8 +58,8 @@ export const Header = ({ onOpenMobileMenu }) => {
 
   const profileMenuItems = [
     { label: 'Public Home Page', icon: Home, onClick: () => navigate('/') },
-    { label: 'My Profile', icon: User, onClick: () => navigate('/administration') },
-    { label: 'Account Settings', icon: Settings, onClick: () => navigate('/administration') },
+    { label: 'My Profile', icon: User, onClick: () => navigate('/profile') },
+    { label: 'Account Settings', icon: Settings, onClick: () => navigate('/settings') },
     { label: 'Help Center', icon: HelpCircle, onClick: () => window.open('https://edusphere.help', '_blank') },
     { divider: true },
     { label: 'Sign Out', icon: LogOut, danger: true, onClick: handleSignOut },
