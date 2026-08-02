@@ -1,52 +1,52 @@
-# 🎓 EduSphere - Next-Gen Multi-Tenant School Management SaaS
+# EduSphere - Next-Gen Multi-Tenant School Management SaaS
 
 Welcome to **EduSphere**, a comprehensive, enterprise-grade School Management SaaS System built for K-12 schools, colleges, and educational institutions.
 
-> 📖 **Looking for the End-User Operating Manual?**  
+>  **Looking for the End-User Operating Manual?**  
 > Check out the step-by-step [USER_MANUAL.md](USER_MANUAL.md) for full instructions on how Administrators, Teachers, Students, and Parents use the platform.
 
 ---
 
-## 🚀 Quick Start & Login Credentials
+##  Quick Start & Login Credentials
 
 You can test every role immediately using the pre-configured demo credentials below:
 
 | Role | Demo Email | Demo Password | Primary Functions |
 | :--- | :--- | :--- | :--- |
-| 🛡️ **School Administrator** | `admin@greenfield.edu.lk` | `demo1234` | Full system control: Add/Edit/Delete Students, Teachers, Exams, Audit Logs, Settings |
-| 👩‍🏫 **Teacher / Faculty** | `teacher@greenfield.edu.lk` | `demo1234` | Mark daily attendance registers, record exam scores, view period timetables |
-| 🎓 **Student & Parent** | `student@greenfield.edu.lk` | `demo1234` | View term marks, grade badges (A+, A, B, C, S, F), print official report card |
+|  **School Administrator** | `admin@greenfield.edu.lk` | `demo1234` | Full system control: Add/Edit/Delete Students, Teachers, Exams, Audit Logs, Settings |
+|  **Teacher / Faculty** | `teacher@greenfield.edu.lk` | `demo1234` | Mark daily attendance registers, record exam scores, view period timetables |
+|  **Student & Parent** | `student@greenfield.edu.lk` | `demo1234` | View term marks, grade badges (A+, A, B, C, S, F), print official report card |
 
 *(Note: You can also log in with any custom email ending in `@teacher...` or `@student...` with password `demo1234` to test role routing.)*
 
 ---
 
-## ✨ System Features A to Z
+##  System Features A to Z
 
-### 1. 🛡️ Role-Based Workspaces & Security Matrix
+### 1.  Role-Based Workspaces & Security Matrix
 - **Dynamic Role Routing**: Automatically detects user permissions on login and presents the corresponding role workspace.
 - **Role Permission Enforcement**: Teachers and Students are restricted from administrative actions (e.g. deleting student accounts or altering system settings).
 - **256-bit AES Encryption**: Secure password hashing and JWT token authentication.
 
-### 2. 🏛️ Interactive 3D School Campus Scene
+### 2.  Interactive 3D School Campus Scene
 - **3D Animated Students & Campus**: Real-time HTML5 Canvas 3D rendering of students walking along the pathway toward Greenfield College.
 - **Interactive Mouse Tilt**: Moving your cursor across the hero scene dynamically shifts the 3D camera angle.
 - **Floating 3D Academic Art**: 3D levitating graduation caps, open books, and A+ badges with smooth sine-wave physics.
 
-### 3. 👥 Student Directory & Lifecycle Management
+### 3.  Student Directory & Lifecycle Management
 - **Full Student Registry**: View, search, filter, add, edit, and delete student records.
 - **Profile Fields**: First Name, Last Name, Admission Number (`GIC-2024-001`), Grade Level (Grade 6–13), Enrolled Class, Medium (English / Sinhala), Guardian Info, and Status.
 - **Automated Delete Integrity**: Deleting a student instantly removes them from both local application state and backend database.
 
-### 4. 👩‍🏫 Teacher Faculty Registry
+### 4.  Teacher Faculty Registry
 - **Teacher Profiles**: Teacher Registration Number (`TR-2026-102`), Assigned Subjects (e.g. Mathematics, Science), Assigned Classes, Phone, and Email.
 - **Full CRUD Support**: Add new faculty members, edit assignments, or delete retired teachers.
 
-### 5. 📅 Attendance Marking & Register Anomaly Tracking
+### 5.  Attendance Marking & Register Anomaly Tracking
 - **Batch Attendance Marker**: 1-click register marking for class teachers (Present, Absent, Late, Excused).
 - **Real-Time Percentages**: Auto-calculates attendance percentages (e.g. `94.8%`) and highlights absent students in red.
 
-### 6. 📝 Examination Scheduling & Mark Entry
+### 6.  Examination Scheduling & Mark Entry
 - **Exam Management**: Schedule new examinations (Title, Exam Code, Academic Term, Start/End Dates).
 - **Exam Details Modal**: Click "View Details" on any exam card to inspect assigned classes, subject list, schedule dates, and pass rate forecasts.
 - **Working Delete Action**: Delete button allowing administrators to purge outdated exam schedules from the database.
@@ -58,14 +58,14 @@ You can test every role immediately using the pre-configured demo credentials be
   - `45 - 54`: **S** (Simple Pass)
   - `< 45`: **F** (Fail)
 
-### 7. 📄 Printable Official Term Report Cards
+### 7.  Printable Official Term Report Cards
 - **Official Seal Report Card**: Students or parents can click **"Print Official Report Card"** to generate a printable document complete with:
   - Official College Header & Logo Emblem.
   - Student Admission Details & Enrolled Section.
   - Subject Marks Table with Grade Badges.
   - Principal's Signature & Digital Seal.
 
-### 8. 🔍 Global `Ctrl + K` Command Search Palette
+### 8.  Global `Ctrl + K` Command Search Palette
 - Press `Ctrl + K` (or `Cmd + K`) anywhere in the dashboard to open the instant search overlay.
 - Searches students, teachers, classes, and subjects in real-time with 1-click navigation.
 
@@ -76,7 +76,7 @@ You can test every role immediately using the pre-configured demo credentials be
 
 ---
 
-## 🛠️ How to Setup & Run Locally
+##  How to Setup & Run Locally
 
 ### Prerequisites
 - **Node.js**: v18.0.0 or higher
@@ -127,7 +127,7 @@ npm run build
 
 ---
 
-## 🧪 Running Automated Playwright E2E Tests
+##  Running Automated Playwright E2E Tests
 
 The repository includes automated Playwright End-to-End test suites covering authentication, student management, and examination creation.
 
@@ -138,7 +138,7 @@ npx playwright test --workers=1
 
 ---
 
-## 📂 System File Architecture
+##  System File Architecture
 
 ```
 School_Management_System/
@@ -183,12 +183,12 @@ School_Management_System/
 
 ---
 
-## 📖 End-User Operating Manual
+##  End-User Operating Manual
 
 For a complete walkthrough of how each role uses the application, read the dedicated [USER_MANUAL.md](USER_MANUAL.md).
 
 ---
 
-## 🔒 License & Copyright
+##  License & Copyright
 
 © 2026 **EduSphere Inc.** All rights reserved. Greenfield International College SaaS Edition.
