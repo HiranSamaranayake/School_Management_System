@@ -1,21 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { CalendarCheck, Save, CheckCircle2, Clock, AlertTriangle, Filter, BarChart2 } from 'lucide-react';
+import { CalendarCheck, Save, CheckCircle2, Clock, AlertTriangle, Filter, BarChart2, ShieldCheck, UserCheck } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Tabs } from '../../components/ui/Tabs';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
-import { Avatar } from '../../components/ui/Avatar';
 import { Table } from '../../components/ui/Table';
 import { FilterBar } from '../../components/ui/FilterBar';
 import { attendanceService } from '../../services/attendanceService';
+import { useAuth } from '../../app/context/AuthContext';
 import { useToast } from '../../app/context/ToastContext';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from 'recharts';
 
 export const AttendancePage = () => {
+  const { user } = useAuth();
   const { addToast } = useToast();
-  const [activeTab, setActiveTab] = useState('register');
 
+  const roleStr = String(user?.role_id || user?.role || '').toLowerCase();
+  const isStudent = roleStr.includes('student');
+
+  const currentStudentId = user?.student_id || 'STD-001';
+  const currentAdmissionNo = user?.admission_no || 'GIC-2024-001';
+  const currentStudentName = `${user?.first_name || 'Hiran'} ${user?.last_name || 'Samaranayake'}`;
+
+  const [activeTab, setActiveTab] = useState('register');
   const [date, setDate] = useState('2026-07-24');
   const [selectedClass, setSelectedClass] = useState('CLS-10SCI');
   const [records, setRecords] = useState([]);
@@ -35,19 +43,26 @@ export const AttendancePage = () => {
   }, [date, selectedClass]);
 
   const handleStatusChange = (studentId, status) => {
+    if (isStudent) return; // Read-only for students
     setRecords(prev => prev.map(r => r.student_id === studentId ? { ...r, status } : r));
   };
 
   const handleRemarksChange = (studentId, remarks) => {
+    if (isStudent) return; // Read-only for students
     setRecords(prev => prev.map(r => r.student_id === studentId ? { ...r, remarks } : r));
   };
 
   const handleMarkAllPresent = () => {
+    if (isStudent) return;
     setRecords(prev => prev.map(r => ({ ...r, status: 'Present' })));
     addToast('Marked Present', 'Set all student statuses to Present', 'info');
   };
 
   const handleSubmitAttendance = async () => {
+    if (isStudent) {
+      addToast('Access Denied', 'Students cannot submit or modify attendance records', 'danger');
+      return;
+    }
     setSubmitting(true);
     try {
       await attendanceService.saveAttendanceBatch(records);
@@ -59,25 +74,46 @@ export const AttendancePage = () => {
     }
   };
 
-  const presentCount = records.filter(r => r.status === 'Present').length;
-  const absentCount = records.filter(r => r.status === 'Absent').length;
-  const lateCount = records.filter(r => r.status === 'Late').length;
-  const excusedCount = records.filter(r => r.status === 'Excused').length;
-  const rate = records.length > 0 ? ((presentCount / records.length) * 100).toFixed(1) : 0;
+  // Filter and sanitize records based on role
+  const sanitizeRecord = (r) => ({
+    ...r,
+    student_name: (!r.student_name || r.student_name === 'Nimal Perera' || isStudent) ? currentStudentName : r.student_name
+  });
+
+  const studentFilter = (r) => 
+    r.student_id === currentStudentId || 
+    r.admission_no === currentAdmissionNo || 
+    r.student_id === 'STD-001' || 
+    r.student_name === 'Nimal Perera' || 
+    r.student_name === currentStudentName;
+
+  const displayedRecords = (isStudent ? records.filter(studentFilter) : records).map(sanitizeRecord);
+
+  const historyRecords = (isStudent ? records.filter(studentFilter) : records).map(sanitizeRecord);
+
+  const presentCount = displayedRecords.filter(r => r.status === 'Present').length;
+  const absentCount = displayedRecords.filter(r => r.status === 'Absent').length;
+  const lateCount = displayedRecords.filter(r => r.status === 'Late').length;
+  const excusedCount = displayedRecords.filter(r => r.status === 'Excused').length;
+  const rate = displayedRecords.length > 0 ? ((presentCount / displayedRecords.length) * 100).toFixed(1) : (isStudent ? '96.4' : '0');
 
   const tabs = [
-    { id: 'register', label: 'Daily Register', icon: CalendarCheck },
-    { id: 'history', label: 'Historical Register', icon: Clock },
-    { id: 'analytics', label: 'Attendance Analytics', icon: BarChart2 },
+    { id: 'register', label: isStudent ? 'Daily Record' : 'Daily Register', icon: CalendarCheck },
+    { id: 'history', label: isStudent ? 'My Attendance History' : 'Historical Register', icon: Clock },
+    { id: 'analytics', label: isStudent ? 'My Attendance Stats' : 'Attendance Analytics', icon: BarChart2 },
   ];
 
   return (
     <div className="space-y-6 text-left">
       <PageHeader
-        title="Attendance Register"
-        subtitle="Record daily student attendance, manage leave excuses, and analyze attendance rates"
+        title={isStudent ? "My Attendance Register" : "Attendance Register"}
+        subtitle={
+          isStudent
+            ? "View your daily attendance logs and personal attendance statistics (Read-Only)"
+            : "Record daily student attendance, manage leave excuses, and analyze attendance rates"
+        }
         actions={
-          activeTab === 'register' ? (
+          !isStudent && activeTab === 'register' ? (
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleMarkAllPresent}>
                 Mark All Present
@@ -86,6 +122,10 @@ export const AttendancePage = () => {
                 Submit Attendance
               </Button>
             </div>
+          ) : isStudent ? (
+            <Badge variant="brand" className="py-1 px-3 text-xs">
+              <ShieldCheck className="w-3.5 h-3.5 mr-1 inline" /> Read-Only Student Access
+            </Badge>
           ) : null
         }
       />
@@ -109,16 +149,22 @@ export const AttendancePage = () => {
 
               <div>
                 <label className="block text-[10px] font-bold uppercase text-slate-400 mb-1">Class Section</label>
-                <select
-                  value={selectedClass}
-                  onChange={(e) => setSelectedClass(e.target.value)}
-                  className="text-xs font-semibold border border-slate-300 rounded-lg px-3 py-1.5 bg-white text-slate-800 outline-none"
-                >
-                  <option value="CLS-10SCI">Grade 10 - Science</option>
-                  <option value="CLS-11SCI">Grade 11 - Science</option>
-                  <option value="CLS-9A">Grade 9 - A</option>
-                  <option value="CLS-6A">Grade 6 - A</option>
-                </select>
+                {!isStudent ? (
+                  <select
+                    value={selectedClass}
+                    onChange={(e) => setSelectedClass(e.target.value)}
+                    className="text-xs font-semibold border border-slate-300 rounded-lg px-3 py-1.5 bg-white text-slate-800 outline-none"
+                  >
+                    <option value="CLS-10SCI">Grade 10 - Science</option>
+                    <option value="CLS-11SCI">Grade 11 - Science</option>
+                    <option value="CLS-9A">Grade 9 - A</option>
+                    <option value="CLS-6A">Grade 6 - A</option>
+                  </select>
+                ) : (
+                  <div className="text-xs font-semibold text-slate-800 bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 inline-block">
+                    Grade 10 - Science
+                  </div>
+                )}
               </div>
             </div>
 
@@ -141,133 +187,226 @@ export const AttendancePage = () => {
 
           {/* Register Table */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-subtle overflow-hidden">
-            <table className="w-full text-xs text-left">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
-                <tr>
-                  <th className="p-4">Student</th>
-                  <th className="p-4">Admission No</th>
-                  <th className="p-4 text-center">Attendance Status</th>
-                  <th className="p-4">Remarks / Notes</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {records.map((row) => (
-                  <tr key={row.attendance_id || row.student_id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="p-4 font-bold text-slate-900">
-                      {row.student_name || "Nimal Perera"}
-                    </td>
-                    <td className="p-4 text-slate-600 font-medium">
-                      {row.admission_no || "GIC-2024-001"}
-                    </td>
-                    <td className="p-4">
-                      {/* Segmented Radio Control */}
-                      <div className="flex items-center justify-center gap-1 bg-slate-100 p-1 rounded-xl max-w-xs mx-auto">
-                        {['Present', 'Absent', 'Late', 'Excused'].map((st) => {
-                          const isSelected = row.status === st;
-                          return (
-                            <button
-                              key={st}
-                              type="button"
-                              onClick={() => handleStatusChange(row.student_id, st)}
-                              className={`flex-1 py-1 text-[11px] font-bold rounded-lg transition-all ${
-                                isSelected
-                                  ? st === 'Present'
-                                    ? 'bg-emerald-600 text-white shadow-xs'
-                                    : st === 'Absent'
-                                    ? 'bg-red-600 text-white shadow-xs'
-                                    : st === 'Late'
-                                    ? 'bg-amber-500 text-white shadow-xs'
-                                    : 'bg-blue-600 text-white shadow-xs'
-                                  : 'text-slate-600 hover:text-slate-900'
-                              }`}
-                            >
-                              {st}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <input
-                        type="text"
-                        placeholder="Add remarks..."
-                        value={row.remarks || ''}
-                        onChange={(e) => handleRemarksChange(row.student_id, e.target.value)}
-                        className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-1 text-slate-800 bg-white focus:ring-1 focus:ring-brand-500 outline-none"
-                      />
-                    </td>
+            {displayedRecords.length === 0 ? (
+              <div className="p-8 text-center text-slate-500 text-xs">
+                No attendance record registered for {isStudent ? 'you' : 'this class'} on {date}.
+              </div>
+            ) : (
+              <table className="w-full text-xs text-left">
+                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+                  <tr>
+                    <th className="p-4">Student</th>
+                    <th className="p-4">Admission No</th>
+                    <th className="p-4 text-center">Attendance Status</th>
+                    <th className="p-4">Remarks / Notes</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {displayedRecords.map((row) => (
+                    <tr key={row.attendance_id || row.student_id} className="hover:bg-slate-50/60 transition-colors">
+                      <td className="p-4 font-bold text-slate-900">
+                        {row.student_name || currentStudentName}
+                      </td>
+                      <td className="p-4 text-slate-600 font-medium">
+                        {row.admission_no || currentAdmissionNo}
+                      </td>
+                      <td className="p-4">
+                        {!isStudent ? (
+                          /* Teacher / Admin Segmented Radio Control */
+                          <div className="flex items-center justify-center gap-1 bg-slate-100 p-1 rounded-xl max-w-xs mx-auto">
+                            {['Present', 'Absent', 'Late', 'Excused'].map((st) => {
+                              const isSelected = row.status === st;
+                              return (
+                                <button
+                                  key={st}
+                                  type="button"
+                                  onClick={() => handleStatusChange(row.student_id, st)}
+                                  className={`flex-1 py-1 text-[11px] font-bold rounded-lg transition-all ${
+                                    isSelected
+                                      ? st === 'Present'
+                                        ? 'bg-emerald-600 text-white shadow-xs'
+                                        : st === 'Absent'
+                                        ? 'bg-red-600 text-white shadow-xs'
+                                        : st === 'Late'
+                                        ? 'bg-amber-500 text-white shadow-xs'
+                                        : 'bg-blue-600 text-white shadow-xs'
+                                      : 'text-slate-600 hover:text-slate-900'
+                                  }`}
+                                >
+                                  {st}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          /* Student Read-Only Badge */
+                          <div className="flex justify-center">
+                            <Badge
+                              variant={
+                                row.status === 'Present'
+                                  ? 'success'
+                                  : row.status === 'Absent'
+                                  ? 'danger'
+                                  : row.status === 'Late'
+                                  ? 'warning'
+                                  : 'info'
+                              }
+                              className="px-3 py-1 text-xs"
+                            >
+                              {row.status}
+                            </Badge>
+                          </div>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        {!isStudent ? (
+                          <input
+                            type="text"
+                            placeholder="Add remarks..."
+                            value={row.remarks || ''}
+                            onChange={(e) => handleRemarksChange(row.student_id, e.target.value)}
+                            className="w-full text-xs border border-slate-200 rounded-lg px-2.5 py-1 text-slate-800 bg-white focus:ring-1 focus:ring-brand-500 outline-none"
+                          />
+                        ) : (
+                          <span className="text-slate-700 font-medium">
+                            {row.remarks ? row.remarks : <span className="text-slate-400 italic">No notes</span>}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       )}
 
       {activeTab === 'history' && (
-        <Card title="Historical Attendance Register" subtitle="Filter past student attendance logs">
-          <FilterBar
-            searchPlaceholder="Search student name or admission..."
-            filters={[
-              { label: 'Class', options: ['Grade 10 - Science', 'Grade 9 - A'] },
-              { label: 'Status', options: ['Present', 'Absent', 'Late', 'Excused'] }
-            ]}
-          />
+        <Card
+          title={isStudent ? "My Attendance History" : "Historical Attendance Register"}
+          subtitle={isStudent ? "Past daily attendance records for your account" : "Filter past student attendance logs"}
+        >
+          {!isStudent && (
+            <FilterBar
+              searchPlaceholder="Search student name or admission..."
+              filters={[
+                { label: 'Class', options: ['Grade 10 - Science', 'Grade 9 - A'] },
+                { label: 'Status', options: ['Present', 'Absent', 'Late', 'Excused'] }
+              ]}
+            />
+          )}
           <Table
             columns={[
               { header: 'Date', key: 'attendance_date' },
-              { header: 'Student Name', key: 'student_name' },
+              ...(!isStudent ? [{ header: 'Student Name', key: 'student_name' }] : []),
               { header: 'Class', key: 'class_id' },
-              { header: 'Status', key: 'status', cell: (r) => <Badge variant={r.status === 'Present' ? 'success' : 'danger'}>{r.status}</Badge> },
-              { header: 'Remarks', key: 'remarks' }
+              {
+                header: 'Status',
+                key: 'status',
+                cell: (r) => (
+                  <Badge
+                    variant={
+                      r.status === 'Present'
+                        ? 'success'
+                        : r.status === 'Absent'
+                        ? 'danger'
+                        : r.status === 'Late'
+                        ? 'warning'
+                        : 'info'
+                    }
+                  >
+                    {r.status}
+                  </Badge>
+                )
+              },
+              { header: 'Remarks', key: 'remarks', cell: (r) => r.remarks || <span className="text-slate-400 italic">—</span> }
             ]}
-            data={records}
+            data={historyRecords}
           />
         </Card>
       )}
 
       {activeTab === 'analytics' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card title="Attendance Rates Across Classes" subtitle="Grade 6 to 13 comparison">
-            <div className="h-64 pt-4">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={[
-                  { class: 'G-6A', rate: 96.5 },
-                  { class: 'G-7A', rate: 94.2 },
-                  { class: 'G-8A', rate: 92.8 },
-                  { class: 'G-9A', rate: 95.1 },
-                  { class: 'G-10Sci', rate: 96.8 },
-                  { class: 'G-11Sci', rate: 93.4 },
-                ]}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                  <XAxis dataKey="class" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
-                  <YAxis domain={[80, 100]} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
-                  <Tooltip />
-                  <Bar dataKey="rate" fill="#4f46e5" radius={[6, 6, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-
-          <Card title="Low Attendance Risk Flag (< 85%)" subtitle="Students requiring academic counseling">
-            <div className="space-y-3 pt-2">
-              <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between">
-                <div>
-                  <h4 className="text-xs font-bold text-red-900">Ishara Gunawardena</h4>
-                  <span className="text-[11px] text-red-700">Grade 8 - A • 78.4% Rate</span>
+        <div>
+          {!isStudent ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card title="Attendance Rates Across Classes" subtitle="Grade 6 to 13 comparison">
+                <div className="h-64 pt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={[
+                      { class: 'G-6A', rate: 96.5 },
+                      { class: 'G-7A', rate: 94.2 },
+                      { class: 'G-8A', rate: 92.8 },
+                      { class: 'G-9A', rate: 95.1 },
+                      { class: 'G-10Sci', rate: 96.8 },
+                      { class: 'G-11Sci', rate: 93.4 },
+                    ]}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                      <XAxis dataKey="class" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+                      <YAxis domain={[80, 100]} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+                      <Tooltip />
+                      <Bar dataKey="rate" fill="#4f46e5" radius={[6, 6, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-                <Badge variant="danger">High Risk</Badge>
-              </div>
+              </Card>
 
-              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between">
-                <div>
-                  <h4 className="text-xs font-bold text-amber-900">Kasun Bandara</h4>
-                  <span className="text-[11px] text-amber-700">Grade 12 - Bio • 83.1% Rate</span>
+              <Card title="Low Attendance Risk Flag (< 85%)" subtitle="Students requiring academic counseling">
+                <div className="space-y-3 pt-2">
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-bold text-red-900">Ishara Gunawardena</h4>
+                      <span className="text-[11px] text-red-700">Grade 8 - A • 78.4% Rate</span>
+                    </div>
+                    <Badge variant="danger">High Risk</Badge>
+                  </div>
+
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-bold text-amber-900">Kasun Bandara</h4>
+                      <span className="text-[11px] text-amber-700">Grade 12 - Bio • 83.1% Rate</span>
+                    </div>
+                    <Badge variant="warning">Warning</Badge>
+                  </div>
                 </div>
-                <Badge variant="warning">Warning</Badge>
-              </div>
+              </Card>
             </div>
-          </Card>
+          ) : (
+            /* Student Analytics View */
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card title="Personal Attendance Rate" subtitle="Academic Term 1 - 2026" className="md:col-span-1">
+                <div className="flex flex-col items-center justify-center p-6 text-center">
+                  <div className="w-28 h-28 rounded-full bg-emerald-50 border-4 border-emerald-500 flex items-center justify-center mb-3">
+                    <span className="text-2xl font-extrabold text-emerald-700">96.4%</span>
+                  </div>
+                  <Badge variant="success">Excellent Standing</Badge>
+                  <p className="text-xs text-slate-500 mt-3">Requirement for exam qualification: 80.0%</p>
+                </div>
+              </Card>
+
+              <Card title="Monthly Attendance Breakdown" subtitle="Presence rate trend" className="md:col-span-2">
+                <div className="h-64 pt-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={[
+                      { month: 'Jan', rate: 98.0 },
+                      { month: 'Feb', rate: 96.5 },
+                      { month: 'Mar', rate: 94.0 },
+                      { month: 'Apr', rate: 97.2 },
+                      { month: 'May', rate: 95.8 },
+                      { month: 'Jun', rate: 96.4 },
+                    ]}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                      <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+                      <YAxis domain={[80, 100]} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+                      <Tooltip />
+                      <Bar dataKey="rate" fill="#10b981" radius={[6, 6, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Card>
+            </div>
+          )}
         </div>
       )}
     </div>

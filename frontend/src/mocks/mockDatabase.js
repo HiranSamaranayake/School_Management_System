@@ -172,8 +172,8 @@ export const initialStudents = [
   {
     student_id: "STD-001",
     admission_no: "GIC-2024-001",
-    first_name: "Nimal",
-    last_name: "Perera",
+    first_name: "Hiran",
+    last_name: "Samaranayake",
     date_of_birth: "2010-04-12",
     gender: "Male",
     medium: "English",
@@ -183,13 +183,13 @@ export const initialStudents = [
     class_id: "CLS-10SCI",
     address: "45/A, High Level Road, Nugegoda",
     phone: "+94 77 234 5678",
-    guardian_name: "Sunil Perera",
+    guardian_name: "K. Samaranayake",
     guardian_relationship: "Father",
     guardian_phone: "+94 77 999 8877",
-    guardian_email: "sunil.perera@gmail.com",
+    guardian_email: "hiran.samaranayake@gmail.com",
     status: "Active",
     portal_account: true,
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80"
+    avatar: ""
   },
   {
     student_id: "STD-002",
@@ -211,7 +211,7 @@ export const initialStudents = [
     guardian_email: "rohan.f@hotmail.com",
     status: "Active",
     portal_account: true,
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80"
+    avatar: ""
   },
   {
     student_id: "STD-003",
@@ -233,7 +233,7 @@ export const initialStudents = [
     guardian_email: "anusha.silva@yahoo.com",
     status: "Active",
     portal_account: true,
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
+    avatar: ""
   },
   {
     student_id: "STD-004",
@@ -255,7 +255,7 @@ export const initialStudents = [
     guardian_email: "mahesh.j@gmail.com",
     status: "Active",
     portal_account: true,
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
+    avatar: ""
   },
   {
     student_id: "STD-005",
@@ -277,7 +277,7 @@ export const initialStudents = [
     guardian_email: "bandara.d@gmail.com",
     status: "Active",
     portal_account: true,
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80"
+    avatar: ""
   },
   {
     student_id: "STD-006",
@@ -299,7 +299,7 @@ export const initialStudents = [
     guardian_email: "pradeep.p@gmail.com",
     status: "Active",
     portal_account: false,
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&auto=format&fit=crop&q=80"
+    avatar: ""
   },
   {
     student_id: "STD-007",
@@ -321,7 +321,7 @@ export const initialStudents = [
     guardian_email: "priyanthi.f@gmail.com",
     status: "Active",
     portal_account: false,
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80"
+    avatar: ""
   },
   {
     student_id: "STD-008",
@@ -343,7 +343,7 @@ export const initialStudents = [
     guardian_email: "kamal.guna@gmail.com",
     status: "Inactive",
     portal_account: false,
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
+    avatar: ""
   }
 ];
 
@@ -355,14 +355,21 @@ export const initialTeacherAllocations = [
 ];
 
 export const initialAttendanceRecords = [
-  { attendance_id: "ATT-1001", student_id: "STD-001", student_name: "Nimal Perera", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-24", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1001", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-24", status: "Present", remarks: "" },
   { attendance_id: "ATT-1002", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_id: "CLS-10SCI", attendance_date: "2026-07-24", status: "Present", remarks: "" },
   { attendance_id: "ATT-1003", student_id: "STD-003", student_name: "Sahan Silva", admission_no: "GIC-2023-118", class_id: "CLS-11SCI", attendance_date: "2026-07-24", status: "Present", remarks: "" },
   { attendance_id: "ATT-1004", student_id: "STD-004", student_name: "Dinithi Jayawardena", admission_no: "GIC-2024-089", class_id: "CLS-9A", attendance_date: "2026-07-24", status: "Late", remarks: "Traffic delay at Nugegoda" },
   { attendance_id: "ATT-1005", student_id: "STD-005", student_name: "Kasun Bandara", admission_no: "GIC-2022-015", class_id: "CLS-12BIO", attendance_date: "2026-07-24", status: "Absent", remarks: "Sick leave - Doctor note submitted" },
   { attendance_id: "ATT-1006", student_id: "STD-006", student_name: "Tharushi Perera", admission_no: "GIC-2025-002", class_id: "CLS-6A", attendance_date: "2026-07-24", status: "Present", remarks: "" },
   { attendance_id: "ATT-1007", student_id: "STD-007", student_name: "Chamod Fernando", admission_no: "GIC-2025-019", class_id: "CLS-6B", attendance_date: "2026-07-24", status: "Excused", remarks: "Sports Competition" },
+  { attendance_id: "ATT-1008", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-23", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1009", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-22", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1010", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-21", status: "Late", remarks: "Bus delay" },
+  { attendance_id: "ATT-1011", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-20", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1012", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-17", status: "Absent", remarks: "Medical leave" },
+  { attendance_id: "ATT-1013", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-16", status: "Present", remarks: "" },
 ];
+
 
 export const initialExams = [
   { exam_id: "EXM-2026-T1", exam_name: "First Term Examination 2026", term: "First Term", academic_year: "2026", start_date: "2026-03-15", end_date: "2026-03-25", classes: ["Grade 10 - Science", "Grade 11 - Science", "Grade 9 - A"], status: "Published" },
@@ -371,10 +378,10 @@ export const initialExams = [
 ];
 
 export const initialExamResults = [
-  { result_id: "RES-001", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Nimal Perera", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-001", subject_name: "Mathematics", marks: 92, grade: "A+", remarks: "Outstanding performance" },
-  { result_id: "RES-002", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Nimal Perera", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-002", subject_name: "English", marks: 88, grade: "A+", remarks: "Excellent essay writing" },
-  { result_id: "RES-003", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Nimal Perera", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-003", subject_name: "General Science", marks: 85, grade: "A+", remarks: "Strong practical score" },
-  { result_id: "RES-004", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Nimal Perera", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-004", subject_name: "ICT", marks: 95, grade: "A+", remarks: "Top in class" },
+  { result_id: "RES-001", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-001", subject_name: "Mathematics", marks: 92, grade: "A+", remarks: "Outstanding performance" },
+  { result_id: "RES-002", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-002", subject_name: "English", marks: 88, grade: "A+", remarks: "Excellent essay writing" },
+  { result_id: "RES-003", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-003", subject_name: "General Science", marks: 85, grade: "A+", remarks: "Strong practical score" },
+  { result_id: "RES-004", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-004", subject_name: "ICT", marks: 95, grade: "A+", remarks: "Top in class" },
 
   { result_id: "RES-005", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - Science", subject_id: "SUB-001", subject_name: "Mathematics", marks: 78, grade: "A", remarks: "Very good" },
   { result_id: "RES-006", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - Science", subject_id: "SUB-002", subject_name: "English", marks: 91, grade: "A+", remarks: "Top score in literature" },
@@ -395,7 +402,7 @@ export const initialUsers = [
   { user_id: "USR-001", name: "James Fernando", email: "admin@greenfield.edu.lk", role: "School Admin", status: "Active", last_login: "2026-07-24 08:30" },
   { user_id: "USR-002", name: "Aruni Jayasinghe", email: "aruni.j@greenfield.edu.lk", role: "Teacher", status: "Active", last_login: "2026-07-23 16:45" },
   { user_id: "USR-003", name: "Bandula Gunawardena", email: "bandula.g@greenfield.edu.lk", role: "Teacher", status: "Active", last_login: "2026-07-24 07:15" },
-  { user_id: "USR-004", name: "Nimal Perera", email: "std.nimal@greenfield.edu.lk", role: "Student", status: "Active", last_login: "2026-07-22 19:10" },
+  { user_id: "USR-004", name: "Hiran Samaranayake", email: "hiran.samaranayake@greenfield.edu.lk", role: "Student", status: "Active", last_login: "2026-07-22 19:10" },
   { user_id: "USR-005", name: "Dinesh Weerasinghe", email: "dinesh.w@greenfield.edu.lk", role: "Teacher", status: "Disabled", last_login: "2026-06-12 11:20" },
 ];
 

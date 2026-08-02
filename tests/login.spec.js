@@ -6,11 +6,11 @@ test.describe('Login Functions', () => {
 
     await page.goto('/login');
 
-    await page.getByLabel('Email').fill('admin@example.com');
+    await page.getByLabel('Email').fill('admin@greenfield.edu.lk');
 
-    await page.getByLabel('Password').fill('admin123');
+    await page.getByLabel('Password').fill('demo1234');
 
-    await page.getByRole('button', { name: 'Login' }).click();
+    await page.getByRole('button', { name: /login/i }).click();
 
     await expect(page).toHaveURL(/dashboard/);
 
@@ -25,11 +25,11 @@ test.describe('Login Functions', () => {
 
     await page.goto('/login');
 
-    await page.getByLabel('Email').fill('admin@example.com');
+    await page.getByLabel('Email').fill('admin@greenfield.edu.lk');
 
     await page.getByLabel('Password').fill('wrongpassword');
 
-    await page.getByRole('button', { name: 'Login' }).click();
+    await page.getByRole('button', { name: /login/i }).click();
 
     await expect(
       page.getByText(/invalid|incorrect|wrong/i).first()

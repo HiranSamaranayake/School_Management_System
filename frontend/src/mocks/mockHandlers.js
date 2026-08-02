@@ -44,7 +44,21 @@ class LocalStore {
   load(key, defaultValue) {
     try {
       const stored = sessionStorage.getItem(`edusphere_${key}`);
-      return stored ? JSON.parse(stored) : defaultValue;
+      if (stored) {
+        let text = stored;
+        if (text.includes('Nimal')) {
+          text = text.replaceAll('Nimal Perera', 'Hiran Samaranayake').replaceAll('Nimal', 'Hiran').replaceAll('Perera', 'Samaranayake');
+        }
+        if (key === 'students') {
+          // Strip unsplash sample avatar URLs for students
+          text = text.replace(/"avatar"\s*:\s*"https:\/\/images\.unsplash\.com\/[^"]+"/g, '"avatar": ""');
+        }
+        if (text !== stored) {
+          sessionStorage.setItem(`edusphere_${key}`, text);
+        }
+        return JSON.parse(text);
+      }
+      return defaultValue;
     } catch {
       return defaultValue;
     }
@@ -78,26 +92,30 @@ export const mockHandlers = {
     let firstName = 'James';
     let lastName = 'Fernando';
 
-    if (email.includes('teacher')) {
+    if (email.toLowerCase().includes('teacher')) {
       userRole = 'Teacher';
       roleId = 'ROLE-TEACHER';
       firstName = 'Aruni';
       lastName = 'Jayasinghe';
-    } else if (email.includes('student')) {
+    } else if (email.toLowerCase().includes('student') || email.toLowerCase().includes('hiran') || email.toLowerCase().includes('std')) {
       userRole = 'Student';
       roleId = 'ROLE-STUDENT';
-      firstName = 'Nimal';
-      lastName = 'Perera';
+      firstName = 'Hiran';
+      lastName = 'Samaranayake';
     }
 
+    const isStudentRole = roleId === 'ROLE-STUDENT';
+
     const loggedUser = {
-      user_id: `USR-${Date.now().toString().slice(-4)}`,
+      user_id: isStudentRole ? 'USR-004' : `USR-${Date.now().toString().slice(-4)}`,
       first_name: firstName,
       last_name: lastName,
       email: email,
       role: userRole,
       role_id: roleId,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+      student_id: isStudentRole ? 'STD-001' : undefined,
+      admission_no: isStudentRole ? 'GIC-2024-001' : undefined,
+      avatar: isStudentRole ? '' : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
     };
 
     return {
@@ -187,7 +205,7 @@ export const mockHandlers = {
       guardian_name: studentData.guardian_name || 'Guardian',
       guardian_phone: studentData.phone || studentData.guardian_phone || '0771234567',
       status: studentData.status || 'Active',
-      avatar: studentData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      avatar: studentData.avatar || ''
     };
     store.students = [newStudent, ...store.students];
     store.save('students', store.students);

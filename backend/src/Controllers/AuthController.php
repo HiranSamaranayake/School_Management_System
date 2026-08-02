@@ -67,12 +67,12 @@ class AuthController {
                     'role_code' => 'ROLE-TEACHER',
                     'avatar' => 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'
                 ];
-            } else if (str_contains(strtolower($email), 'student')) {
+            } else if (str_contains(strtolower($email), 'student') || str_contains(strtolower($email), 'hiran') || str_contains(strtolower($email), 'std')) {
                 $user = [
                     'user_id' => 3,
                     'school_id' => 1,
-                    'first_name' => 'Nimal',
-                    'last_name' => 'Perera',
+                    'first_name' => 'Hiran',
+                    'last_name' => 'Samaranayake',
                     'email' => $email,
                     'role_name' => 'Student',
                     'role_code' => 'ROLE-STUDENT',

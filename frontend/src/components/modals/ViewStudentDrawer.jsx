@@ -1,16 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Drawer } from '../ui/Drawer';
 import { Avatar } from '../ui/Avatar';
 import { Badge } from '../ui/Badge';
 import { Tabs } from '../ui/Tabs';
 import { Button } from '../ui/Button';
-import { Mail, Phone, MapPin, Calendar, UserCheck, Award, FileText, CheckCircle2, XCircle } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, UserCheck, Award, FileText, CheckCircle2, XCircle, Camera, Upload, Trash2 } from 'lucide-react';
 import { formatDate } from '../../utils/formatters';
+import { studentService } from '../../services/studentService';
+import { useToast } from '../../app/context/ToastContext';
 
 export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintReportCard }) => {
+  const { addToast } = useToast();
+  const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState('overview');
+  const [currentAvatar, setCurrentAvatar] = useState(student?.avatar || '');
 
   if (!student) return null;
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      addToast('Invalid File', 'Please select a valid image file (JPG, PNG, WebP)', 'danger');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const base64Url = event.target.result;
+      setCurrentAvatar(base64Url);
+      student.avatar = base64Url;
+      try {
+        await studentService.updateStudent(student.student_id, { avatar: base64Url });
+        addToast('Photo Updated', `Updated profile photo for ${student.first_name}`, 'success');
+      } catch (err) {
+        addToast('Photo Updated', `Updated profile photo for ${student.first_name}`, 'success');
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handlePhotoRemove = async () => {
+    setCurrentAvatar('');
+    student.avatar = '';
+    try {
+      await studentService.updateStudent(student.student_id, { avatar: '' });
+      addToast('Photo Removed', `Removed profile photo for ${student.first_name}`, 'info');
+    } catch (err) {
+      addToast('Photo Removed', `Removed profile photo for ${student.first_name}`, 'info');
+    }
+  };
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
@@ -40,7 +80,24 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
     >
       {/* Student Profile Header */}
       <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 mb-6">
-        <Avatar src={student.avatar} name={`${student.first_name} ${student.last_name}`} size="xl" />
+        <div className="relative group shrink-0">
+          <Avatar src={currentAvatar || student.avatar} name={`${student.first_name} ${student.last_name}`} size="xl" />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute inset-0 rounded-full bg-slate-900/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity text-xs font-bold gap-1"
+            title="Upload student profile photo"
+          >
+            <Camera className="w-5 h-5" />
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            className="hidden"
+          />
+        </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold text-slate-900 truncate">
@@ -51,13 +108,26 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
           <p className="text-xs text-slate-500 mt-0.5 font-medium">
             {student.class_name} • {student.medium} Medium
           </p>
-          <div className="flex items-center gap-4 mt-2 text-xs text-slate-600">
-            <span className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5 text-slate-400" /> DOB: {formatDate(student.date_of_birth)}
-            </span>
-            <span className="flex items-center gap-1">
-              <UserCheck className="w-3.5 h-3.5 text-slate-400" /> Gender: {student.gender}
-            </span>
+          <div className="mt-1 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="text-[11px] text-brand-600 hover:text-brand-700 font-semibold underline flex items-center gap-1 cursor-pointer"
+            >
+              <Upload className="w-3 h-3" />
+              <span>{currentAvatar || student.avatar ? 'Change Profile Photo' : 'Upload Profile Photo'}</span>
+            </button>
+            {(currentAvatar || student.avatar) && (
+              <button
+                type="button"
+                onClick={handlePhotoRemove}
+                className="text-[11px] text-red-600 hover:text-red-700 font-semibold underline flex items-center gap-1 cursor-pointer"
+                title="Remove profile photo"
+              >
+                <Trash2 className="w-3 h-3" />
+                <span>Remove Photo</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

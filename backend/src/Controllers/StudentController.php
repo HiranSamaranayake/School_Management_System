@@ -58,7 +58,7 @@ class StudentController {
 
         // Demo fallback if database is empty or offline
         $demoStudents = [
-            ["student_id" => "STD-001", "admission_no" => "GIC-2024-001", "first_name" => "Nimal", "last_name" => "Perera", "gender" => "Male", "grade_level" => "Grade 10", "class_name" => "Grade 10 - Science", "medium" => "English", "guardian_name" => "Sunil Perera", "guardian_phone" => "+94 77 123 4567", "status" => "Active", "avatar" => "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150"],
+            ["student_id" => "STD-001", "admission_no" => "GIC-2024-001", "first_name" => "Hiran", "last_name" => "Samaranayake", "gender" => "Male", "grade_level" => "Grade 10", "class_name" => "Grade 10 - Science", "medium" => "English", "guardian_name" => "K. Samaranayake", "guardian_phone" => "+94 77 123 4567", "status" => "Active", "avatar" => "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150"],
             ["student_id" => "STD-002", "admission_no" => "GIC-2024-042", "first_name" => "Kavindi", "last_name" => "Fernando", "gender" => "Female", "grade_level" => "Grade 10", "class_name" => "Grade 10 - Science", "medium" => "English", "guardian_name" => "Mahesh Fernando", "guardian_phone" => "+94 71 987 6543", "status" => "Active", "avatar" => "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150"],
             ["student_id" => "STD-003", "admission_no" => "GIC-2023-118", "first_name" => "Sahan", "last_name" => "Silva", "gender" => "Male", "grade_level" => "Grade 11", "class_name" => "Grade 11 - Science", "medium" => "English", "guardian_name" => "Rohana Silva", "guardian_phone" => "+94 76 555 4321", "status" => "Active", "avatar" => "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150"],
             ["student_id" => "STD-004", "admission_no" => "GIC-2024-089", "first_name" => "Dinithi", "last_name" => "Jayawardena", "gender" => "Female", "grade_level" => "Grade 9", "class_name" => "Grade 9 - A", "medium" => "Sinhala", "guardian_name" => "Kamal Jayawardena", "guardian_phone" => "+94 70 333 2211", "status" => "Active", "avatar" => "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150"]
@@ -78,7 +78,7 @@ class StudentController {
                 return;
             }
         }
-        echo json_encode(["student_id" => "STD-001", "first_name" => "Nimal", "last_name" => "Perera"]);
+        echo json_encode(["student_id" => "STD-001", "first_name" => "Hiran", "last_name" => "Samaranayake"]);
     }
 
     public function store(): void {

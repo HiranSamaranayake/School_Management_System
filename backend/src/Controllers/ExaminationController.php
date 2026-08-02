@@ -105,7 +105,7 @@ class ExaminationController {
         }
 
         $demoResults = [
-            ["result_id" => "RES-001", "student_name" => "Nimal Perera", "admission_no" => "GIC-2024-001", "subject_name" => "Mathematics", "marks" => 92, "grade" => "A+", "remarks" => "Outstanding"],
+            ["result_id" => "RES-001", "student_name" => "Hiran Samaranayake", "admission_no" => "GIC-2024-001", "subject_name" => "Mathematics", "marks" => 92, "grade" => "A+", "remarks" => "Outstanding"],
             ["result_id" => "RES-002", "student_name" => "Kavindi Fernando", "admission_no" => "GIC-2024-042", "subject_name" => "Mathematics", "marks" => 78, "grade" => "A", "remarks" => "Very good"],
         ];
         echo json_encode($demoResults);

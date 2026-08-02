@@ -25,7 +25,7 @@ class AttendanceController {
         if (empty($records)) {
             // Demo records fallback if empty
             $records = [
-                ["attendance_id" => "ATT-1001", "student_id" => 1, "student_name" => "Nimal Perera", "admission_no" => "GIC-2024-001", "class_id" => "CLS-10SCI", "attendance_date" => "2026-07-24", "status" => "Present", "remarks" => ""],
+                ["attendance_id" => "ATT-1001", "student_id" => 1, "student_name" => "Hiran Samaranayake", "admission_no" => "GIC-2024-001", "class_id" => "CLS-10SCI", "attendance_date" => "2026-07-24", "status" => "Present", "remarks" => ""],
                 ["attendance_id" => "ATT-1002", "student_id" => 2, "student_name" => "Kavindi Fernando", "admission_no" => "GIC-2024-042", "class_id" => "CLS-10SCI", "attendance_date" => "2026-07-24", "status" => "Present", "remarks" => ""],
                 ["attendance_id" => "ATT-1003", "student_id" => 3, "student_name" => "Sahan Silva", "admission_no" => "GIC-2023-118", "class_id" => "CLS-11SCI", "attendance_date" => "2026-07-24", "status" => "Present", "remarks" => ""],
                 ["attendance_id" => "ATT-1004", "student_id" => 4, "student_name" => "Dinithi Jayawardena", "admission_no" => "GIC-2024-089", "class_id" => "CLS-9A", "attendance_date" => "2026-07-24", "status" => "Late", "remarks" => "Traffic delay"],

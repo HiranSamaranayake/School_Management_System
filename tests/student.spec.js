@@ -1,46 +1,33 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Student Management', () => {
+test.describe('Student Management & Profile Photo Upload', () => {
 
   test.beforeEach(async ({ page }) => {
-
     await page.goto('/login');
-
-    await page.getByLabel('Email').fill('admin@example.com');
-
-    await page.getByLabel('Password').fill('admin123');
-
-    await page.getByRole('button', { name: 'Login' }).click();
-
+    await page.getByLabel('Email').fill('admin@greenfield.edu.lk');
+    await page.getByLabel('Password').fill('demo1234');
+    await page.getByRole('button', { name: /login/i }).click();
     await expect(page).toHaveURL(/dashboard/);
-
   });
 
-
-  test('admin can add student', async ({ page }) => {
-
+  test('students directory lists students without sample pictures and supports photo upload in modal', async ({ page }) => {
     await page.goto('/students');
+    await expect(page).toHaveURL(/students/);
 
-    await page.getByRole('button', {
-      name: /add student/i
-    }).first().click();
+    // Click Add Student
+    await page.getByRole('button', { name: /add student/i }).first().click();
 
-    await page.getByLabel('Student Name').fill('Test Student');
+    // Verify modal has Student Profile Photo uploader
+    await expect(page.getByText('Student Profile Photo')).toBeVisible();
+    await expect(page.getByRole('button', { name: /upload photo/i })).toBeVisible();
 
-    await page.getByLabel('Email').fill(
-      'teststudent@example.com'
-    );
-
+    await page.getByLabel('Student Name').fill('New Student');
+    await page.getByLabel('Email').fill('newstudent@example.com');
     await page.getByLabel('Phone').fill('0771234567');
 
-    await page.getByRole('button', {
-      name: /save student/i
-    }).click();
+    await page.getByRole('button', { name: /save student/i }).click();
 
-    await expect(
-      page.getByText('Test Student').first()
-    ).toBeVisible();
-
+    await expect(page.getByText('New Student').first()).toBeVisible();
   });
 
 });

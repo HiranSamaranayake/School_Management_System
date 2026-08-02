@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   GraduationCap,
@@ -9,28 +9,62 @@ import {
   User,
   CheckCircle2,
   FileText,
-  Clock
+  Clock,
+  Camera,
+  Upload,
+  Trash2
 } from 'lucide-react';
 import { useAuth } from '../../app/context/AuthContext';
+import { useToast } from '../../app/context/ToastContext';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { Avatar } from '../../components/ui/Avatar';
 import { PrintableReportCardModal } from '../../components/modals/PrintableReportCardModal';
 
 export const StudentDashboard = () => {
-  const { user, school } = useAuth();
+  const { user, updateUser, school } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   const [isReportCardOpen, setIsReportCardOpen] = useState(false);
 
   const studentProfile = {
-    first_name: user?.first_name || 'Nimal',
-    last_name: user?.last_name || 'Perera',
-    admission_no: 'GIC-2024-001',
+    first_name: user?.first_name || 'Hiran',
+    last_name: user?.last_name || 'Samaranayake',
+    admission_no: user?.admission_no || 'GIC-2024-001',
     grade_level: 'Grade 10',
     class_name: 'Grade 10 - Science',
     medium: 'English',
-    guardian_name: 'Sunil Perera',
+    guardian_name: user?.guardian_name || `${user?.last_name || 'Samaranayake'} Guardian`,
     guardian_phone: '0771234567',
+  };
+
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      addToast('Invalid File', 'Please select a valid image file (JPG, PNG, WebP)', 'danger');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64Url = event.target.result;
+      if (updateUser) {
+        updateUser({ avatar: base64Url });
+      }
+      addToast('Profile Photo Updated', 'Your profile photo has been updated successfully', 'success');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAvatarRemove = () => {
+    if (updateUser) {
+      updateUser({ avatar: '' });
+    }
+    addToast('Profile Photo Removed', 'Your profile photo has been removed', 'info');
   };
 
   const myResults = [
@@ -52,16 +86,68 @@ export const StudentDashboard = () => {
 
   return (
     <div className="space-y-6 text-left">
-      {/* Top Banner Header */}
+      {/* Top Banner Header with Profile Photo Upload */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-brand-900 via-indigo-900 to-purple-950 p-6 rounded-2xl text-white shadow-xl">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight">Student Portal: {studentProfile.first_name} {studentProfile.last_name}</h1>
-            <Badge variant="brand">Student View</Badge>
+        <div className="flex items-center gap-4">
+          {/* Profile Photo Container with Upload Trigger */}
+          <div className="relative group shrink-0">
+            <Avatar
+              src={user?.avatar}
+              name={`${studentProfile.first_name} ${studentProfile.last_name}`}
+              size="xl"
+              className="ring-4 ring-white/20 shadow-lg cursor-pointer"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute inset-0 rounded-full bg-slate-900/70 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white transition-opacity text-[10px] font-bold gap-0.5"
+              title="Upload your profile photo"
+              aria-label="Upload photo"
+            >
+              <Camera className="w-5 h-5" />
+              <span>Change</span>
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              className="hidden"
+              id="student-avatar-upload"
+              data-testid="student-avatar-upload"
+            />
           </div>
-          <p className="text-xs text-brand-200 mt-1">
-            {school?.name || 'Greenfield International College'} • Admission No: <strong className="text-white">{studentProfile.admission_no}</strong>
-          </p>
+
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold tracking-tight">Student Portal: {studentProfile.first_name} {studentProfile.last_name}</h1>
+              <Badge variant="brand">Student View</Badge>
+            </div>
+            <p className="text-xs text-brand-200 mt-1">
+              {school?.name || 'Greenfield International College'} • Admission No: <strong className="text-white">{studentProfile.admission_no}</strong>
+            </p>
+            <div className="mt-2 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="inline-flex items-center gap-1.5 text-xs text-brand-300 hover:text-white font-medium underline cursor-pointer transition-colors"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span>{user?.avatar ? 'Change Profile Photo' : 'Upload Profile Photo'}</span>
+              </button>
+              {user?.avatar && (
+                <button
+                  type="button"
+                  onClick={handleAvatarRemove}
+                  className="inline-flex items-center gap-1 text-xs text-red-300 hover:text-red-100 font-medium underline cursor-pointer transition-colors"
+                  title="Remove your profile photo"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Remove Photo</span>
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -79,14 +165,17 @@ export const StudentDashboard = () => {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-subtle flex items-center gap-4">
-          <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+        <div
+          onClick={() => navigate('/attendance')}
+          className="p-4 bg-white rounded-2xl border border-slate-200 shadow-subtle flex items-center gap-4 cursor-pointer hover:border-emerald-300 hover:shadow-md transition-all group"
+        >
+          <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors">
             <CalendarCheck className="w-6 h-6" />
           </div>
           <div>
             <span className="text-xs text-slate-500 font-medium">My Attendance</span>
             <h3 className="text-xl font-bold text-emerald-700">96.4%</h3>
-            <span className="text-[10px] text-slate-400">108 Present • 4 Absent</span>
+            <span className="text-[10px] text-slate-400">108 Present • 4 Absent (View Register)</span>
           </div>
         </div>
 

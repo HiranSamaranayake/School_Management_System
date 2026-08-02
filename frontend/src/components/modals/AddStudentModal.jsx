@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Modal } from '../ui/Modal';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
 import { Switch } from '../ui/Switch';
 import { Button } from '../ui/Button';
+import { Avatar } from '../ui/Avatar';
+import { Camera, Upload, Trash2 } from 'lucide-react';
 import { studentService } from '../../services/studentService';
 import { useToast } from '../../app/context/ToastContext';
 import { validateName, validatePhone, validateEmail } from '../../utils/validators';
 
 export const AddStudentModal = ({ isOpen, onClose, onSuccess, initialData = null }) => {
   const { addToast } = useToast();
+  const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     first_name: initialData?.first_name || '',
     last_name: initialData?.last_name || '',
+    avatar: initialData?.avatar || '',
     date_of_birth: initialData?.date_of_birth || '2012-05-15',
     gender: initialData?.gender || 'Male',
     admission_no: initialData?.admission_no || `GIC-2026-${Math.floor(100 + Math.random() * 900)}`,
@@ -30,6 +34,23 @@ export const AddStudentModal = ({ isOpen, onClose, onSuccess, initialData = null
     portal_account: initialData?.portal_account ?? true,
     status: initialData?.status || 'Active',
   });
+
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      addToast('Invalid File', 'Please select a valid image file (JPG, PNG, WebP)', 'danger');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      handleChange('avatar', event.target.result);
+      addToast('Photo Uploaded', 'Student profile photo loaded', 'info');
+    };
+    reader.readAsDataURL(file);
+  };
 
   const [errors, setErrors] = useState({});
 
@@ -94,8 +115,53 @@ export const AddStudentModal = ({ isOpen, onClose, onSuccess, initialData = null
         {/* Section 1: Personal Information */}
         <div>
           <h4 className="text-xs font-bold text-brand-600 uppercase tracking-wider mb-3">
-            1. Personal Information
+            1. Personal Information & Profile Photo
           </h4>
+          
+          {/* Profile Photo Uploader */}
+          <div className="flex items-center gap-4 mb-4 p-3 bg-slate-50 border border-slate-200/80 rounded-xl">
+            <Avatar
+              src={formData.avatar}
+              name={`${formData.first_name || 'Student'} ${formData.last_name}`}
+              size="lg"
+            />
+            <div>
+              <span className="text-xs font-bold text-slate-800 block">Student Profile Photo</span>
+              <p className="text-[10px] text-slate-500 mb-1.5">Upload a picture for student ID card & profile badge</p>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  icon={Upload}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {formData.avatar ? 'Change Photo' : 'Upload Photo'}
+                </Button>
+                {formData.avatar && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="xs"
+                    icon={Trash2}
+                    onClick={() => handleChange('avatar', '')}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    Remove
+                  </Button>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                className="hidden"
+                id="modal-student-avatar-input"
+              />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
               label="Student Name"

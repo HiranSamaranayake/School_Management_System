@@ -33,7 +33,7 @@ export const ExaminationsPage = () => {
 
   // Interactive Marks Grid
   const [marksGrid, setMarksGrid] = useState([
-    { student_id: 'STD-001', student_name: 'Nimal Perera', admission_no: 'GIC-2024-001', marks: 92, grade: 'A+', remarks: 'Outstanding problem solving', error: null },
+    { student_id: 'STD-001', student_name: 'Hiran Samaranayake', admission_no: 'GIC-2024-001', marks: 92, grade: 'A+', remarks: 'Outstanding problem solving', error: null },
     { student_id: 'STD-002', student_name: 'Kavindi Fernando', admission_no: 'GIC-2024-042', marks: 78, grade: 'A', remarks: 'Very good score', error: null },
     { student_id: 'STD-003', student_name: 'Sahan Silva', admission_no: 'GIC-2023-118', marks: 85, grade: 'A+', remarks: 'Excellent performance', error: null },
     { student_id: 'STD-004', student_name: 'Dinithi Jayawardena', admission_no: 'GIC-2024-089', marks: 68, grade: 'B', remarks: 'Good effort', error: null },

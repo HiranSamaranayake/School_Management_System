@@ -8,7 +8,16 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem('edusphere_user');
-      return saved ? JSON.parse(saved) : null;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.first_name === 'Nimal' || parsed.last_name === 'Perera') {
+          parsed.first_name = 'Hiran';
+          parsed.last_name = 'Samaranayake';
+          localStorage.setItem('edusphere_user', JSON.stringify(parsed));
+        }
+        return parsed;
+      }
+      return null;
     } catch {
       return null;
     }
@@ -80,10 +89,20 @@ export const AuthProvider = ({ children }) => {
     return !!permissions[permissionKey];
   };
 
+  const updateUser = (updatedFields) => {
+    setUser(prev => {
+      const newUser = { ...prev, ...updatedFields };
+      localStorage.setItem('edusphere_user', JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        setUser,
+        updateUser,
         school,
         setSchool,
         academicYear,
