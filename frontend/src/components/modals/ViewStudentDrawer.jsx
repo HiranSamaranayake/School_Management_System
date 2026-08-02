@@ -59,6 +59,10 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
     { id: 'enrollment', label: 'Enrollment History' },
   ];
 
+  const displayName = (student.first_name || student.last_name)
+    ? `${student.first_name || ''} ${student.last_name || ''}`.trim()
+    : (student.name || student.full_name || 'Student');
+
   return (
     <Drawer
       isOpen={isOpen}
@@ -81,7 +85,7 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
       {/* Student Profile Header */}
       <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 mb-6">
         <div className="relative group shrink-0">
-          <Avatar src={currentAvatar || student.avatar} name={`${student.first_name} ${student.last_name}`} size="xl" />
+          <Avatar src={currentAvatar || student.avatar} name={displayName} size="xl" />
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
@@ -101,7 +105,7 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <h3 className="text-lg font-bold text-slate-900 truncate">
-              {student.first_name} {student.last_name}
+              {displayName}
             </h3>
             <Badge variant={student.status === 'Active' ? 'success' : 'neutral'}>{student.status}</Badge>
           </div>

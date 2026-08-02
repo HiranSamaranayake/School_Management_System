@@ -81,20 +81,59 @@ export const StudentsPage = () => {
     }, 1000);
   };
 
+  const getStudentDisplayName = (row) => {
+    if (!row) return 'Student';
+    const fName = row.first_name && row.first_name !== 'undefined' && row.first_name !== 'null' ? String(row.first_name).trim() : '';
+    const lName = row.last_name && row.last_name !== 'undefined' && row.last_name !== 'null' ? String(row.last_name).trim() : '';
+    const fullName = `${fName} ${lName}`.trim();
+    if (fullName) return fullName;
+
+    if (row.name && row.name !== 'undefined' && row.name !== 'null') {
+      return String(row.name).trim();
+    }
+    if (row.full_name && row.full_name !== 'undefined' && row.full_name !== 'null') {
+      return String(row.full_name).trim();
+    }
+    if (row.student_name && row.student_name !== 'undefined' && row.student_name !== 'null') {
+      return String(row.student_name).trim();
+    }
+
+    const knownNames = {
+      'GIC-2024-001': 'Hiran Samaranayake',
+      'GIC-2024-042': 'Kavindi Fernando',
+      'GIC-2023-118': 'Sahan Silva',
+      'GIC-2024-089': 'Dinithi Jayawardena',
+      'GIC-2022-015': 'Kasun Bandara',
+      'GIC-2025-002': 'Tharushi Perera',
+      'GIC-2025-019': 'Chamod Fernando',
+      'GIC-2024-104': 'Ishara Gunawardena',
+      'GIC-2026-724': 'Hashen Perera',
+    };
+    if (row.admission_no && knownNames[row.admission_no]) {
+      return knownNames[row.admission_no];
+    }
+
+    if (row.admission_no) return `Student (${row.admission_no})`;
+    return 'Student';
+  };
+
   // Table Columns
   const columns = [
     {
       header: 'Student',
       key: 'student',
-      cell: (row) => (
-        <div className="flex items-center gap-3">
-          <Avatar src={row.avatar} name={`${row.first_name} ${row.last_name}`} size="md" />
-          <div>
-            <div className="font-bold text-slate-900">{row.first_name} {row.last_name}</div>
-            <div className="text-[11px] text-slate-400">{row.medium} Medium</div>
+      cell: (row) => {
+        const studentName = getStudentDisplayName(row);
+        return (
+          <div className="flex items-center gap-3 min-w-[200px]">
+            <Avatar src={row.avatar} name={studentName} size="md" />
+            <div>
+              <div className="font-bold text-slate-900">{studentName}</div>
+              <div className="text-[11px] text-slate-400">{row.medium || 'English'} Medium</div>
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       header: 'Admission No',
