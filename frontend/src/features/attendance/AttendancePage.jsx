@@ -10,6 +10,7 @@ import { FilterBar } from '../../components/ui/FilterBar';
 import { attendanceService } from '../../services/attendanceService';
 import { useAuth } from '../../app/context/AuthContext';
 import { useToast } from '../../app/context/ToastContext';
+import { Avatar } from '../../components/ui/Avatar';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar } from 'recharts';
 
 export const AttendancePage = () => {
@@ -74,10 +75,76 @@ export const AttendancePage = () => {
     }
   };
 
+  const resolveStudentName = (r) => {
+    if (!r) return 'Student';
+    const knownNames = {
+      'GIC-2024-001': 'Hiran Samaranayake',
+      'STD-001': 'Hiran Samaranayake',
+      '1': 'Hiran Samaranayake',
+      'GIC-2024-042': 'Kavindi Fernando',
+      'STD-002': 'Kavindi Fernando',
+      '2': 'Kavindi Fernando',
+      'GIC-2023-118': 'Sahan Silva',
+      'STD-003': 'Sahan Silva',
+      '3': 'Sahan Silva',
+      'GIC-2024-089': 'Dinithi Jayawardena',
+      'STD-004': 'Dinithi Jayawardena',
+      '4': 'Dinithi Jayawardena',
+      'GIC-2022-015': 'Kasun Bandara',
+      'STD-005': 'Kasun Bandara',
+      '5': 'Kasun Bandara',
+      'GIC-2025-002': 'Tharushi Perera',
+      'STD-006': 'Tharushi Perera',
+      '6': 'Tharushi Perera',
+      'GIC-2025-019': 'Chamod Fernando',
+      'STD-007': 'Chamod Fernando',
+      '7': 'Chamod Fernando',
+      'GIC-2024-104': 'Ishara Gunawardena',
+      'STD-008': 'Ishara Gunawardena',
+      '8': 'Ishara Gunawardena',
+      'GIC-2026-724': 'Hashen Perera',
+      'STD-011': 'Hashen Perera',
+      '11': 'Hashen Perera',
+    };
+
+    // 1. Check knownNames mapping by admission_no or student_id FIRST!
+    if (r.admission_no && knownNames[r.admission_no]) {
+      return knownNames[r.admission_no];
+    }
+    if (r.student_id && knownNames[String(r.student_id)]) {
+      return knownNames[String(r.student_id)];
+    }
+
+    // 2. Check if first_name / last_name exist and are valid person names
+    const fName = r.first_name && !r.first_name.startsWith('GIC-') && !r.first_name.startsWith('STD-') && r.first_name !== 'undefined' ? String(r.first_name).trim() : '';
+    const lName = r.last_name && !r.last_name.startsWith('GIC-') && !r.last_name.startsWith('STD-') && r.last_name !== 'undefined' ? String(r.last_name).trim() : '';
+    const fullName = `${fName} ${lName}`.trim();
+    if (fullName) return fullName;
+
+    // 3. Check student_name / name IF NOT A CODE STRING!
+    const candidateNames = [r.student_name, r.name, r.full_name];
+    for (const cn of candidateNames) {
+      if (
+        cn &&
+        typeof cn === 'string' &&
+        cn !== 'Nimal Perera' &&
+        cn !== 'undefined' &&
+        cn !== 'null' &&
+        !cn.startsWith('GIC-') &&
+        !cn.startsWith('STD-') &&
+        !cn.startsWith('ATT-')
+      ) {
+        return cn.trim();
+      }
+    }
+
+    return isStudent ? currentStudentName : 'Student';
+  };
+
   // Filter and sanitize records based on role
   const sanitizeRecord = (r) => ({
     ...r,
-    student_name: (!r.student_name || r.student_name === 'Nimal Perera' || isStudent) ? currentStudentName : r.student_name
+    student_name: isStudent ? currentStudentName : resolveStudentName(r)
   });
 
   const studentFilter = (r) => 
@@ -87,9 +154,41 @@ export const AttendancePage = () => {
     r.student_name === 'Nimal Perera' || 
     r.student_name === currentStudentName;
 
-  const displayedRecords = (isStudent ? records.filter(studentFilter) : records).map(sanitizeRecord);
+  const classFilter = (r) => {
+    if (!selectedClass || selectedClass === 'ALL') return true;
 
-  const historyRecords = (isStudent ? records.filter(studentFilter) : records).map(sanitizeRecord);
+    // Check direct class_id or class_name match
+    if (r.class_id === selectedClass || r.class_name === selectedClass) return true;
+
+    // Check mapping by selected class section code
+    if (selectedClass === 'CLS-10SCI') {
+      return r.class_id === 'CLS-10SCI' || r.grade_level === 'Grade 10' || ['GIC-2024-001', 'GIC-2024-042', 'GIC-2026-724', 'GIC-2024-055', 'STD-001', 'STD-002', 'STD-011', 'STD-012'].includes(r.admission_no || r.student_id);
+    }
+    if (selectedClass === 'CLS-11SCI') {
+      return r.class_id === 'CLS-11SCI' || r.grade_level === 'Grade 11' || ['GIC-2023-118', 'GIC-2023-145', 'GIC-2023-162', 'STD-003', 'STD-013', 'STD-014'].includes(r.admission_no || r.student_id);
+    }
+    if (selectedClass === 'CLS-9A') {
+      return r.class_id === 'CLS-9A' || r.grade_level === 'Grade 9' || ['GIC-2024-089', 'GIC-2024-092', 'GIC-2024-098', 'STD-004', 'STD-015', 'STD-016'].includes(r.admission_no || r.student_id);
+    }
+    if (selectedClass === 'CLS-6A') {
+      return r.class_id === 'CLS-6A' || ['GIC-2025-002', 'GIC-2025-008', 'STD-006', 'STD-017'].includes(r.admission_no || r.student_id);
+    }
+    if (selectedClass === 'CLS-6B') {
+      return r.class_id === 'CLS-6B' || ['GIC-2025-019', 'GIC-2025-025', 'STD-007', 'STD-018'].includes(r.admission_no || r.student_id);
+    }
+    if (selectedClass === 'CLS-8A') {
+      return r.class_id === 'CLS-8A' || r.grade_level === 'Grade 8' || ['GIC-2024-104', 'GIC-2024-112', 'STD-008', 'STD-019'].includes(r.admission_no || r.student_id);
+    }
+    if (selectedClass === 'CLS-12BIO') {
+      return r.class_id === 'CLS-12BIO' || r.grade_level === 'Grade 12' || ['GIC-2022-015', 'GIC-2022-022', 'STD-005', 'STD-020'].includes(r.admission_no || r.student_id);
+    }
+
+    return false;
+  };
+
+  const displayedRecords = (isStudent ? records.filter(studentFilter) : records.filter(classFilter)).map(sanitizeRecord);
+
+  const historyRecords = (isStudent ? records.filter(studentFilter) : records.filter(classFilter)).map(sanitizeRecord);
 
   const presentCount = displayedRecords.filter(r => r.status === 'Present').length;
   const absentCount = displayedRecords.filter(r => r.status === 'Absent').length;
@@ -159,6 +258,10 @@ export const AttendancePage = () => {
                     <option value="CLS-11SCI">Grade 11 - Science</option>
                     <option value="CLS-9A">Grade 9 - A</option>
                     <option value="CLS-6A">Grade 6 - A</option>
+                    <option value="CLS-6B">Grade 6 - B</option>
+                    <option value="CLS-8A">Grade 8 - A</option>
+                    <option value="CLS-12BIO">Grade 12 - Bio</option>
+                    <option value="ALL">All Classes</option>
                   </select>
                 ) : (
                   <div className="text-xs font-semibold text-slate-800 bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 inline-block">
@@ -205,7 +308,13 @@ export const AttendancePage = () => {
                   {displayedRecords.map((row) => (
                     <tr key={row.attendance_id || row.student_id} className="hover:bg-slate-50/60 transition-colors">
                       <td className="p-4 font-bold text-slate-900">
-                        {row.student_name || currentStudentName}
+                        <div className="flex items-center gap-3">
+                          <Avatar src={row.avatar} name={row.student_name} size="md" />
+                          <div>
+                            <div className="font-bold text-slate-900">{row.student_name}</div>
+                            <div className="text-[11px] text-slate-400 font-normal">{row.admission_no || currentAdmissionNo}</div>
+                          </div>
+                        </div>
                       </td>
                       <td className="p-4 text-slate-600 font-medium">
                         {row.admission_no || currentAdmissionNo}

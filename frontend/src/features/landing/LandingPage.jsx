@@ -9,6 +9,7 @@ import {
   BarChart3,
   ShieldCheck,
   ArrowRight,
+  LogIn,
   Sparkles,
   TrendingUp,
   Brain,
@@ -460,14 +461,15 @@ export const LandingPage = () => {
             Experience the future of school SaaS administration with role-based dashboards for Administrators, Teachers, and Students.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <Button
-              variant="primary"
-              size="lg"
+            <button
+              type="button"
               onClick={() => navigate('/login')}
-              className="bg-white text-brand-900 hover:bg-slate-100 font-bold shadow-lg w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-base shadow-2xl transition-all cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto"
             >
-              Sign In to EduSphere Workspace
-            </Button>
+              <LogIn className="w-5 h-5 text-brand-600" />
+              <span>Sign In to EduSphere Workspace</span>
+              <ArrowRight className="w-5 h-5 text-brand-600" />
+            </button>
           </div>
         </div>
       </section>

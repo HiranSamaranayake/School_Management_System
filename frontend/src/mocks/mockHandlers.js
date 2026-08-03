@@ -30,6 +30,10 @@ class LocalStore {
     this.classes = this.load('classes', initialClasses);
     this.subjects = this.load('subjects', initialSubjects);
     this.students = this.load('students', initialStudents);
+    if (Array.isArray(this.students) && this.students.length < initialStudents.length) {
+      this.students = initialStudents;
+      this.save('students', this.students);
+    }
     this.teacherAllocations = this.load('teacherAllocations', initialTeacherAllocations);
     this.attendanceRecords = this.load('attendanceRecords', initialAttendanceRecords);
     this.exams = this.load('exams', initialExams);
@@ -156,7 +160,19 @@ export const mockHandlers = {
   // Students
   getStudents: async (params = {}) => {
     await delay(50);
-    let list = [...store.students];
+    let list = store.students.map(s => {
+      const name = (s.first_name || s.last_name) 
+        ? `${s.first_name || ''} ${s.last_name || ''}`.trim()
+        : (s.name || s.full_name || s.student_name || 'Student');
+      return {
+        ...s,
+        first_name: s.first_name || name.split(' ')[0],
+        last_name: s.last_name || name.split(' ').slice(1).join(' ') || '',
+        name,
+        full_name: name,
+        student_name: name
+      };
+    });
 
     if (params.search) {
       const term = params.search.toLowerCase();
@@ -164,6 +180,7 @@ export const mockHandlers = {
         s =>
           s.first_name.toLowerCase().includes(term) ||
           s.last_name.toLowerCase().includes(term) ||
+          s.name.toLowerCase().includes(term) ||
           s.admission_no.toLowerCase().includes(term) ||
           s.grade_level.toLowerCase().includes(term)
       );
@@ -287,8 +304,80 @@ export const mockHandlers = {
   saveSubject: async (s) => { store.subjects.push(s); return true; },
 
   // Attendance
-  getAttendance: async () => store.attendanceRecords,
-  saveAttendanceBatch: async () => ({ success: true }),
+  getAttendance: async (date, classId) => {
+    const knownNames = {
+      'GIC-2024-001': 'Hiran Samaranayake',
+      'STD-001': 'Hiran Samaranayake',
+      'GIC-2024-042': 'Kavindi Fernando',
+      'STD-002': 'Kavindi Fernando',
+      'GIC-2023-118': 'Sahan Silva',
+      'STD-003': 'Sahan Silva',
+      'GIC-2024-089': 'Dinithi Jayawardena',
+      'STD-004': 'Dinithi Jayawardena',
+      'GIC-2022-015': 'Kasun Bandara',
+      'STD-005': 'Kasun Bandara',
+      'GIC-2025-002': 'Tharushi Perera',
+      'STD-006': 'Tharushi Perera',
+      'GIC-2025-019': 'Chamod Fernando',
+      'STD-007': 'Chamod Fernando',
+      'GIC-2024-104': 'Ishara Gunawardena',
+      'STD-008': 'Ishara Gunawardena',
+      'GIC-2026-724': 'Hashen Perera',
+    };
+
+    const targetClass = classId || 'CLS-10SCI';
+
+    // Get enrolled students for the target class section
+    const matchingStudents = store.students.filter(s => {
+      if (!targetClass || targetClass === 'ALL') return true;
+      return (
+        s.class_id === targetClass ||
+        s.class_name === targetClass ||
+        (targetClass === 'CLS-10SCI' && (s.grade_level === 'Grade 10' || s.class_id === 'CLS-10SCI')) ||
+        (targetClass === 'CLS-11SCI' && (s.grade_level === 'Grade 11' || s.class_id === 'CLS-11SCI')) ||
+        (targetClass === 'CLS-9A' && (s.grade_level === 'Grade 9' || s.class_id === 'CLS-9A')) ||
+        (targetClass === 'CLS-6A' && (s.grade_level === 'Grade 6' && s.class_name?.includes('A'))) ||
+        (targetClass === 'CLS-6B' && (s.grade_level === 'Grade 6' && s.class_name?.includes('B'))) ||
+        (targetClass === 'CLS-8A' && (s.grade_level === 'Grade 8' || s.class_id === 'CLS-8A')) ||
+        (targetClass === 'CLS-12BIO' && (s.grade_level === 'Grade 12' || s.class_id === 'CLS-12BIO'))
+      );
+    });
+
+    const attendanceDate = date || '2026-07-24';
+
+    return matchingStudents.map((s, idx) => {
+      const realName = knownNames[s.admission_no] || knownNames[s.student_id] || `${s.first_name || ''} ${s.last_name || ''}`.trim() || 'Student';
+
+      const existing = (store.attendanceRecords || []).find(r => 
+        (r.student_id === s.student_id || r.admission_no === s.admission_no) && r.attendance_date === attendanceDate
+      );
+
+      return {
+        attendance_id: existing?.attendance_id || `ATT-${attendanceDate}-${s.student_id}`,
+        student_id: s.student_id,
+        student_name: realName,
+        admission_no: s.admission_no,
+        class_id: s.class_id || targetClass,
+        attendance_date: attendanceDate,
+        status: existing?.status || (idx % 3 === 1 ? 'Absent' : idx % 3 === 2 ? 'Late' : 'Present'),
+        remarks: existing?.remarks || (idx % 3 === 1 ? 'Sick leave' : idx % 3 === 2 ? 'Traffic delay' : '')
+      };
+    });
+  },
+  saveAttendanceBatch: async (batch) => {
+    if (Array.isArray(batch)) {
+      batch.forEach(item => {
+        const existingIdx = store.attendanceRecords.findIndex(r => r.student_id === item.student_id && r.attendance_date === item.attendance_date);
+        if (existingIdx >= 0) {
+          store.attendanceRecords[existingIdx] = { ...store.attendanceRecords[existingIdx], ...item };
+        } else {
+          store.attendanceRecords.push(item);
+        }
+      });
+      store.save('attendanceRecords', store.attendanceRecords);
+    }
+    return { success: true };
+  },
 
   // Exams
   getExams: async () => store.exams,
