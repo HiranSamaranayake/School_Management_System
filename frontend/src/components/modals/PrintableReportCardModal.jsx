@@ -149,18 +149,18 @@ export const PrintableReportCardModal = ({ isOpen, onClose, student, results = [
 </body>
 </html>`;
 
-    // Download actual PDF file blob
-    const blob = new Blob([reportContent], { type: 'application/pdf' });
+    // 1. Download valid HTML report document (opens in any browser instantly)
+    const blob = new Blob([reportContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Report_Card_${admissionNo}_${studentName.replace(/\s+/g, '_')}.pdf`;
+    a.download = `Report_Card_${admissionNo}_${studentName.replace(/\s+/g, '_')}.html`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    // Also open print popup to save directly as PDF if preferred
+    // 2. Open Save-As-PDF print dialog for instant binary PDF generation
     const printWin = window.open('', '_blank');
     if (printWin) {
       printWin.document.write(reportContent);
@@ -171,7 +171,7 @@ export const PrintableReportCardModal = ({ isOpen, onClose, student, results = [
       }, 300);
     }
 
-    addToast('PDF Downloaded', `Downloaded official report card PDF for ${studentName}`, 'success');
+    addToast('PDF Download Initiated', `Generated official report card for ${studentName}. Select "Save as PDF" to save binary PDF.`, 'success');
   };
 
   const demoResults = results.length > 0 ? results : [
@@ -197,9 +197,6 @@ export const PrintableReportCardModal = ({ isOpen, onClose, student, results = [
         <>
           <Button variant="outline" size="sm" onClick={onClose}>
             Close
-          </Button>
-          <Button variant="secondary" size="sm" icon={Printer} onClick={handlePrint}>
-            Print Report Card
           </Button>
           <Button variant="primary" size="sm" icon={Download} onClick={handleDownloadPDF}>
             Download PDF Report

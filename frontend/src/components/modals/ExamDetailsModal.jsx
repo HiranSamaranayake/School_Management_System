@@ -6,10 +6,15 @@ import { Trash2, Calendar, Award, Layers } from 'lucide-react';
 import { formatDate } from '../../utils/formatters';
 import { examinationService } from '../../services/examinationService';
 import { useToast } from '../../app/context/ToastContext';
+import { useAuth } from '../../app/context/AuthContext';
 
 export const ExamDetailsModal = ({ isOpen, onClose, exam, onDeleteSuccess }) => {
+  const { user } = useAuth();
   const { addToast } = useToast();
   const [deleting, setDeleting] = useState(false);
+
+  const roleStr = String(user?.role_id || user?.role || '').toLowerCase();
+  const isStudent = roleStr.includes('student');
 
   if (!isOpen || !exam) return null;
 
@@ -37,15 +42,19 @@ export const ExamDetailsModal = ({ isOpen, onClose, exam, onDeleteSuccess }) => 
       subtitle={`Exam Identifier: ${exam.exam_id}`}
       footer={
         <div className="flex items-center justify-between w-full">
-          <Button
-            variant="danger"
-            size="sm"
-            icon={Trash2}
-            onClick={handleDelete}
-            isLoading={deleting}
-          >
-            Delete Examination
-          </Button>
+          {!isStudent ? (
+            <Button
+              variant="danger"
+              size="sm"
+              icon={Trash2}
+              onClick={handleDelete}
+              isLoading={deleting}
+            >
+              Delete Examination
+            </Button>
+          ) : (
+            <div />
+          )}
           <Button variant="outline" size="sm" onClick={onClose}>
             Close
           </Button>
