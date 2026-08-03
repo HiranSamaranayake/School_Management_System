@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CalendarCheck, Save, CheckCircle2, Clock, AlertTriangle, Filter, BarChart2, ShieldCheck, UserCheck } from 'lucide-react';
+import { CalendarCheck, Save, CheckCircle2, Clock, AlertTriangle, Filter, BarChart2, ShieldCheck, UserCheck, Calendar, XCircle } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Tabs } from '../../components/ui/Tabs';
 import { Card } from '../../components/ui/Card';
@@ -27,8 +27,33 @@ export const AttendancePage = () => {
   const [activeTab, setActiveTab] = useState('register');
   const [date, setDate] = useState('2026-07-24');
   const [selectedClass, setSelectedClass] = useState('CLS-10SCI');
+  const [selectedMonth, setSelectedMonth] = useState('2026-07');
   const [records, setRecords] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+
+  const monthOptions = [
+    { value: '2026-07', label: 'July 2026' },
+    { value: '2026-06', label: 'June 2026' },
+    { value: '2026-05', label: 'May 2026' },
+    { value: '2026-04', label: 'April 2026' },
+    { value: '2026-03', label: 'March 2026' },
+    { value: '2026-02', label: 'February 2026' },
+    { value: '2026-01', label: 'January 2026' },
+    { value: 'ALL', label: 'All Months (2026 YTD)' },
+  ];
+
+  const monthStats = {
+    '2026-07': { monthName: 'July 2026', totalDays: 22, attendedDays: 21, absentDays: 1, lateDays: 0, rate: '95.5%' },
+    '2026-06': { monthName: 'June 2026', totalDays: 20, attendedDays: 19, absentDays: 1, lateDays: 0, rate: '95.0%' },
+    '2026-05': { monthName: 'May 2026', totalDays: 21, attendedDays: 20, absentDays: 1, lateDays: 0, rate: '95.2%' },
+    '2026-04': { monthName: 'April 2026', totalDays: 18, attendedDays: 18, absentDays: 0, lateDays: 0, rate: '100.0%' },
+    '2026-03': { monthName: 'March 2026', totalDays: 22, attendedDays: 21, absentDays: 1, lateDays: 0, rate: '95.5%' },
+    '2026-02': { monthName: 'February 2026', totalDays: 20, attendedDays: 19, absentDays: 1, lateDays: 0, rate: '95.0%' },
+    '2026-01': { monthName: 'January 2026', totalDays: 20, attendedDays: 20, absentDays: 0, lateDays: 0, rate: '100.0%' },
+    'ALL': { monthName: '2026 Academic Year To Date', totalDays: 143, attendedDays: 138, absentDays: 5, lateDays: 0, rate: '96.5%' },
+  };
+
+  const currentMonthData = monthStats[selectedMonth] || monthStats['2026-07'];
 
   const fetchAttendance = async () => {
     try {
@@ -483,37 +508,113 @@ export const AttendancePage = () => {
             </div>
           ) : (
             /* Student Analytics View */
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card title="Personal Attendance Rate" subtitle="Academic Term 1 - 2026" className="md:col-span-1">
-                <div className="flex flex-col items-center justify-center p-6 text-center">
-                  <div className="w-28 h-28 rounded-full bg-emerald-50 border-4 border-emerald-500 flex items-center justify-center mb-3">
-                    <span className="text-2xl font-extrabold text-emerald-700">96.4%</span>
+            <div className="space-y-6">
+              {/* Month Selection Control Header */}
+              <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-subtle flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5 text-brand-600" />
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">Month-Wise Attendance Days Summary</h3>
+                    <p className="text-xs text-slate-500">Select a month to view days attended vs days absent</p>
                   </div>
-                  <Badge variant="success">Excellent Standing</Badge>
-                  <p className="text-xs text-slate-500 mt-3">Requirement for exam qualification: 80.0%</p>
                 </div>
-              </Card>
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-bold text-slate-700">Select Month:</label>
+                  <select
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    className="text-xs font-bold border border-slate-300 rounded-lg px-3 py-2 bg-white text-slate-900 outline-none focus:ring-2 focus:ring-brand-500 shadow-2xs cursor-pointer"
+                  >
+                    {monthOptions.map(m => (
+                      <option key={m.value} value={m.value}>{m.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-              <Card title="Monthly Attendance Breakdown" subtitle="Presence rate trend" className="md:col-span-2">
-                <div className="h-64 pt-4">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={[
-                      { month: 'Jan', rate: 98.0 },
-                      { month: 'Feb', rate: 96.5 },
-                      { month: 'Mar', rate: 94.0 },
-                      { month: 'Apr', rate: 97.2 },
-                      { month: 'May', rate: 95.8 },
-                      { month: 'Jun', rate: 96.4 },
-                    ]}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                      <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
-                      <YAxis domain={[80, 100]} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
-                      <Tooltip />
-                      <Bar dataKey="rate" fill="#10b981" radius={[6, 6, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
+              {/* Month Stat Summary Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-subtle flex items-center gap-4">
+                  <div className="p-3 bg-brand-50 text-brand-600 rounded-xl">
+                    <CalendarCheck className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Total School Days</span>
+                    <h3 className="text-2xl font-extrabold text-slate-900">{currentMonthData.totalDays} Days</h3>
+                    <span className="text-[10px] text-slate-400">{currentMonthData.monthName}</span>
+                  </div>
                 </div>
-              </Card>
+
+                <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-subtle flex items-center gap-4">
+                  <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Days Attended (Present)</span>
+                    <h3 className="text-2xl font-extrabold text-emerald-600">{currentMonthData.attendedDays} Days</h3>
+                    <span className="text-[10px] text-emerald-700 font-semibold">Attended school</span>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-subtle flex items-center gap-4">
+                  <div className="p-3 bg-red-50 text-red-600 rounded-xl">
+                    <XCircle className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Days Not Attended (Absent)</span>
+                    <h3 className="text-2xl font-extrabold text-red-600">{currentMonthData.absentDays} Day{currentMonthData.absentDays !== 1 ? 's' : ''}</h3>
+                    <span className="text-[10px] text-red-700 font-semibold">Absences recorded</span>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-subtle flex items-center gap-4">
+                  <div className="p-3 bg-indigo-50 text-indigo-600 rounded-xl">
+                    <BarChart2 className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <span className="text-xs text-slate-500 font-medium">Monthly Attendance Rate</span>
+                    <h3 className="text-2xl font-extrabold text-indigo-600">{currentMonthData.rate}</h3>
+                    <span className="text-[10px] text-indigo-700 font-semibold">Requirement: 80.0%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Charts & Breakdown Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card title="Personal Standing" subtitle={`Standing for ${currentMonthData.monthName}`} className="md:col-span-1">
+                  <div className="flex flex-col items-center justify-center p-6 text-center">
+                    <div className="w-28 h-28 rounded-full bg-emerald-50 border-4 border-emerald-500 flex items-center justify-center mb-3">
+                      <span className="text-2xl font-extrabold text-emerald-700">{currentMonthData.rate}</span>
+                    </div>
+                    <Badge variant="success">Excellent Standing</Badge>
+                    <p className="text-xs text-slate-500 mt-3">
+                      Attended {currentMonthData.attendedDays} out of {currentMonthData.totalDays} academic days in {currentMonthData.monthName}.
+                    </p>
+                  </div>
+                </Card>
+
+                <Card title="Monthly Presence Rate Trend" subtitle="2026 Academic Year Comparison" className="md:col-span-2">
+                  <div className="h-64 pt-4">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={[
+                        { month: 'Jan', rate: 100.0 },
+                        { month: 'Feb', rate: 95.0 },
+                        { month: 'Mar', rate: 95.5 },
+                        { month: 'Apr', rate: 100.0 },
+                        { month: 'May', rate: 95.2 },
+                        { month: 'Jun', rate: 95.0 },
+                        { month: 'Jul', rate: 95.5 },
+                      ]}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                        <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+                        <YAxis domain={[80, 100]} tickLine={false} axisLine={false} tick={{ fontSize: 11 }} />
+                        <Tooltip />
+                        <Bar dataKey="rate" fill="#10b981" radius={[6, 6, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </Card>
+              </div>
             </div>
           )}
         </div>
