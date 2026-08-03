@@ -54,7 +54,7 @@ export const Modal = ({
           </div>
 
           {/* Content */}
-          <div className="px-6 py-5 max-h-[calc(85vh-120px)] overflow-y-auto">{children}</div>
+          <div className="px-6 py-5 max-h-[calc(90vh-120px)] overflow-y-auto text-slate-900">{children}</div>
 
           {/* Footer */}
           {footer && (

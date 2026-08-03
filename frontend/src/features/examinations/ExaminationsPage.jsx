@@ -280,7 +280,14 @@ export const ExaminationsPage = () => {
                     variant="outline"
                     size="xs"
                     icon={Printer}
-                    onClick={() => setReportCardStudent({ first_name: r.student_name.split(' ')[0], last_name: r.student_name.split(' ')[1] || '', admission_no: r.admission_no, class_name: 'Grade 10 - Science', medium: 'English' })}
+                    onClick={() => setReportCardStudent({
+                      student_name: r.student_name,
+                      first_name: r.student_name?.split(' ')[0] || '',
+                      last_name: r.student_name?.split(' ').slice(1).join(' ') || '',
+                      admission_no: r.admission_no,
+                      class_name: 'Grade 10 - Mathematics',
+                      medium: 'English'
+                    })}
                   >
                     View Report Card
                   </Button>
