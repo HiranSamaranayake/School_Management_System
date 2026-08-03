@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Search, GraduationCap, Users, BookOpen, Layers, X, ArrowRight } from 'lucide-react';
 import { userService } from '../../services/userService';
 
-export const CommandPalette = ({ isOpen, onClose }) => {
-  const [query, setQuery] = useState('');
+export const CommandPalette = ({ isOpen, onClose, initialQuery = '' }) => {
+  const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState({ students: [], teachers: [], classes: [], subjects: [] });
   const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
@@ -26,6 +26,9 @@ export const CommandPalette = ({ isOpen, onClose }) => {
   // Focus input when opened
   useEffect(() => {
     if (isOpen) {
+      if (initialQuery) {
+        setQuery(initialQuery);
+      }
       setTimeout(() => {
         if (inputRef.current) inputRef.current.focus();
       }, 50);
@@ -33,7 +36,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
       setQuery('');
       setResults({ students: [], teachers: [], classes: [], subjects: [] });
     }
-  }, [isOpen]);
+  }, [isOpen, initialQuery]);
 
   useEffect(() => {
     if (!query.trim()) {
@@ -83,7 +86,7 @@ export const CommandPalette = ({ isOpen, onClose }) => {
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search students, teachers, classes, subjects... (Ctrl+K)"
+              placeholder="Search..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="w-full bg-transparent text-sm font-medium text-slate-900 placeholder-slate-400 outline-none"

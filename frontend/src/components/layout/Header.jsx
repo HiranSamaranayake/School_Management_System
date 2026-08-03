@@ -29,6 +29,7 @@ export const Header = ({ onOpenMobileMenu }) => {
   const { unreadCount, setIsOpen: setIsNotifOpen } = useNotifications();
   const { openQuickCreate } = useQuickCreate();
   const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [headerSearch, setHeaderSearch] = useState('');
   const navigate = useNavigate();
 
   // Global Ctrl+K / Cmd+K keyboard shortcut listener
@@ -48,13 +49,24 @@ export const Header = ({ onOpenMobileMenu }) => {
     navigate('/login');
   };
 
-  const quickCreateItems = [
-    { label: 'New Student', icon: GraduationCap, onClick: () => openQuickCreate('student') },
-    { label: 'New Teacher', icon: Users, onClick: () => openQuickCreate('teacher') },
-    { label: 'New Class', icon: Layers, onClick: () => openQuickCreate('class') },
-    { label: 'Record Attendance', icon: Clock, onClick: () => openQuickCreate('attendance') },
-    { label: 'Create Exam', icon: FileCheck, onClick: () => openQuickCreate('exam') },
-  ];
+  const roleStr = String(user?.role_id || user?.role || '').toLowerCase();
+  const isTeacher = roleStr.includes('teacher');
+  const isStudent = roleStr.includes('student');
+
+  const quickCreateItems = isTeacher
+    ? [
+        { label: 'New Student', icon: GraduationCap, onClick: () => openQuickCreate('student') },
+        { label: 'New Class', icon: Layers, onClick: () => openQuickCreate('class') },
+        { label: 'Record Attendance', icon: Clock, onClick: () => openQuickCreate('attendance') },
+        { label: 'Create Exam', icon: FileCheck, onClick: () => openQuickCreate('exam') },
+      ]
+    : [
+        { label: 'New Student', icon: GraduationCap, onClick: () => openQuickCreate('student') },
+        { label: 'New Teacher', icon: Users, onClick: () => openQuickCreate('teacher') },
+        { label: 'New Class', icon: Layers, onClick: () => openQuickCreate('class') },
+        { label: 'Record Attendance', icon: Clock, onClick: () => openQuickCreate('attendance') },
+        { label: 'Create Exam', icon: FileCheck, onClick: () => openQuickCreate('exam') },
+      ];
 
   const profileMenuItems = [
     { label: 'Public Home Page', icon: Home, onClick: () => navigate('/') },
@@ -90,17 +102,27 @@ export const Header = ({ onOpenMobileMenu }) => {
           </button>
 
           {/* Quick Command Bar Search Field */}
-          <button
-            type="button"
-            onClick={() => setIsCommandOpen(true)}
-            className="hidden md:flex items-center gap-3 px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-400 hover:text-slate-600 hover:bg-slate-100/80 transition-all text-xs w-64 md:w-72"
-          >
-            <Search className="w-4 h-4 text-slate-400" />
-            <span className="flex-1 text-left">Search anything in EduSphere...</span>
-            <kbd className="px-1.5 py-0.5 rounded border bg-white border-slate-200 text-[10px] font-semibold text-slate-500 shadow-2xs">
+          <div className="relative hidden md:flex items-center w-64 md:w-80">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={headerSearch}
+              onChange={(e) => {
+                setHeaderSearch(e.target.value);
+                setIsCommandOpen(true);
+              }}
+              onFocus={() => setIsCommandOpen(true)}
+              className="w-full pl-9 pr-14 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-900 placeholder:text-slate-400 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all shadow-2xs"
+            />
+            <button
+              type="button"
+              onClick={() => setIsCommandOpen(true)}
+              className="absolute right-2 px-1.5 py-0.5 rounded border bg-white border-slate-200 text-[10px] font-semibold text-slate-500 hover:bg-slate-50 cursor-pointer shadow-2xs"
+            >
               Ctrl K
-            </kbd>
-          </button>
+            </button>
+          </div>
         </div>
 
         {/* Right Section */}
@@ -115,17 +137,19 @@ export const Header = ({ onOpenMobileMenu }) => {
           </button>
 
           {/* Quick Create Dropdown */}
-          <Dropdown
-            trigger={
-              <button className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm transition-all active:scale-95">
-                <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">Create</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-80" />
-              </button>
-            }
-            items={quickCreateItems}
-            align="right"
-          />
+          {!isStudent && (
+            <Dropdown
+              trigger={
+                <button className="inline-flex items-center gap-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-sm transition-all active:scale-95">
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden sm:inline">Create</span>
+                  <ChevronDown className="w-3.5 h-3.5 opacity-80" />
+                </button>
+              }
+              items={quickCreateItems}
+              align="right"
+            />
+          )}
 
           {/* Notification Bell */}
           <button
@@ -172,7 +196,7 @@ export const Header = ({ onOpenMobileMenu }) => {
         </div>
       </header>
 
-      <CommandPalette isOpen={isCommandOpen} onClose={() => setIsCommandOpen(false)} />
+      <CommandPalette isOpen={isCommandOpen} onClose={() => setIsCommandOpen(false)} initialQuery={headerSearch} />
     </>
   );
 };
