@@ -7,10 +7,15 @@ import { Button } from '../ui/Button';
 import { Mail, Phone, MapPin, Calendar, UserCheck, Award, FileText, CheckCircle2, XCircle, Camera, Upload, Trash2 } from 'lucide-react';
 import { formatDate } from '../../utils/formatters';
 import { studentService } from '../../services/studentService';
+import { useAuth } from '../../app/context/AuthContext';
 import { useToast } from '../../app/context/ToastContext';
 
 export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintReportCard }) => {
   const { addToast } = useToast();
+  const { user } = useAuth();
+  const roleStr = String(user?.role_id || user?.role || '').toLowerCase();
+  const isTeacher = roleStr.includes('teacher');
+
   const fileInputRef = useRef(null);
   const [activeTab, setActiveTab] = useState('overview');
   const [currentAvatar, setCurrentAvatar] = useState(student?.avatar || '');
@@ -18,6 +23,7 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
   if (!student) return null;
 
   const handlePhotoUpload = async (e) => {
+    if (isTeacher) return;
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -42,6 +48,7 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
   };
 
   const handlePhotoRemove = async () => {
+    if (isTeacher) return;
     setCurrentAvatar('');
     student.avatar = '';
     try {
@@ -76,9 +83,15 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
             <FileText className="w-4 h-4 mr-1.5" />
             Print Report Card
           </Button>
-          <Button variant="primary" size="sm" onClick={() => { onClose(); onEdit && onEdit(student); }}>
-            Edit Profile
-          </Button>
+          {!isTeacher ? (
+            <Button variant="primary" size="sm" onClick={() => { onClose(); onEdit && onEdit(student); }}>
+              Edit Profile
+            </Button>
+          ) : (
+            <Button variant="secondary" size="sm" onClick={onClose}>
+              Close
+            </Button>
+          )}
         </>
       }
     >
@@ -86,21 +99,25 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
       <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 mb-6">
         <div className="relative group shrink-0">
           <Avatar src={currentAvatar || student.avatar} name={displayName} size="xl" />
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="absolute inset-0 rounded-full bg-slate-900/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity text-xs font-bold gap-1"
-            title="Upload student profile photo"
-          >
-            <Camera className="w-5 h-5" />
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handlePhotoUpload}
-            className="hidden"
-          />
+          {!isTeacher && (
+            <>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute inset-0 rounded-full bg-slate-900/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white transition-opacity text-xs font-bold gap-1"
+                title="Upload student profile photo"
+              >
+                <Camera className="w-5 h-5" />
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
+            </>
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
@@ -112,27 +129,29 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
           <p className="text-xs text-slate-500 mt-0.5 font-medium">
             {student.class_name} • {student.medium} Medium
           </p>
-          <div className="mt-1 flex items-center gap-3">
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="text-[11px] text-brand-600 hover:text-brand-700 font-semibold underline flex items-center gap-1 cursor-pointer"
-            >
-              <Upload className="w-3 h-3" />
-              <span>{currentAvatar || student.avatar ? 'Change Profile Photo' : 'Upload Profile Photo'}</span>
-            </button>
-            {(currentAvatar || student.avatar) && (
+          {!isTeacher && (
+            <div className="mt-1 flex items-center gap-3">
               <button
                 type="button"
-                onClick={handlePhotoRemove}
-                className="text-[11px] text-red-600 hover:text-red-700 font-semibold underline flex items-center gap-1 cursor-pointer"
-                title="Remove profile photo"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-[11px] text-brand-600 hover:text-brand-700 font-semibold underline flex items-center gap-1 cursor-pointer"
               >
-                <Trash2 className="w-3 h-3" />
-                <span>Remove Photo</span>
+                <Upload className="w-3 h-3" />
+                <span>{currentAvatar || student.avatar ? 'Change Profile Photo' : 'Upload Profile Photo'}</span>
               </button>
-            )}
-          </div>
+              {(currentAvatar || student.avatar) && (
+                <button
+                  type="button"
+                  onClick={handlePhotoRemove}
+                  className="text-[11px] text-red-600 hover:text-red-700 font-semibold underline flex items-center gap-1 cursor-pointer"
+                  title="Remove profile photo"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  <span>Remove Photo</span>
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

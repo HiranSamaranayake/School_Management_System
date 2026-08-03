@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Download, MoreVertical, Eye, Edit2, Trash2, GraduationCap, FileText } from 'lucide-react';
+import { Plus, Download, MoreVertical, Eye, Edit2, Trash2, GraduationCap, FileText, BookOpen } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { Button } from '../../components/ui/Button';
 import { StatCard } from '../../components/ui/StatCard';
@@ -14,6 +14,7 @@ import { AddStudentModal } from '../../components/modals/AddStudentModal';
 import { ViewStudentDrawer } from '../../components/modals/ViewStudentDrawer';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import { PrintableReportCardModal } from '../../components/modals/PrintableReportCardModal';
+import { useAuth } from '../../app/context/AuthContext';
 import { useToast } from '../../app/context/ToastContext';
 import { getStatusBadgeVariant } from '../../utils/formatters';
 
@@ -75,10 +76,46 @@ export const StudentsPage = () => {
   };
 
   const handleExportCSV = () => {
-    addToast('Export Started', 'Exporting student directory as CSV...', 'info');
-    setTimeout(() => {
-      addToast('Export Completed', 'Downloaded student_directory_2026.csv', 'success');
-    }, 1000);
+    const listToExport = visibleStudents && visibleStudents.length > 0 ? visibleStudents : students;
+    if (!listToExport || listToExport.length === 0) {
+      addToast('Export Warning', 'No student records available to export', 'warning');
+      return;
+    }
+
+    const headers = ['Student ID', 'Admission No', 'Student Name', 'Grade / Class', 'Medium', 'Gender', 'Guardian Name', 'Guardian Phone', 'Status'];
+    
+    const rows = listToExport.map(s => {
+      const sName = getStudentDisplayName(s);
+      const cName = (isTeacher && teacherSubject === 'Mathematics')
+        ? (s.grade_level === 'Grade 10' || s.class_name?.includes('10') ? 'Grade 10 - Mathematics' : 'Grade 11 - Mathematics')
+        : (s.class_name || s.grade_level || 'Grade 10');
+
+      return [
+        `"${s.student_id || ''}"`,
+        `"${s.admission_no || ''}"`,
+        `"${sName.replace(/"/g, '""')}"`,
+        `"${cName.replace(/"/g, '""')}"`,
+        `"${s.medium || 'English'}"`,
+        `"${s.gender || ''}"`,
+        `"${(s.guardian_name || '').replace(/"/g, '""')}"`,
+        `"${s.guardian_phone || ''}"`,
+        `"${s.status || 'Active'}"`
+      ].join(',');
+    });
+
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    const filename = isTeacher ? 'my_class_roster_2026.csv' : 'student_directory_2026.csv';
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    addToast('Export Completed', `Successfully downloaded ${filename}`, 'success');
   };
 
   const getStudentDisplayName = (row) => {
@@ -155,7 +192,12 @@ export const StudentsPage = () => {
     {
       header: 'Grade / Class',
       key: 'class_name',
-      cell: (row) => <Badge variant="neutral">{row.class_name}</Badge>,
+      cell: (row) => {
+        const classNameStr = (isTeacher && teacherSubject === 'Mathematics')
+          ? (row.grade_level === 'Grade 10' || row.class_name?.includes('10') ? 'Grade 10 - Mathematics' : 'Grade 11 - Mathematics')
+          : (row.class_name || row.grade_level || 'Grade 10');
+        return <Badge variant="neutral">{classNameStr}</Badge>;
+      },
     },
     {
       header: 'Gender',
@@ -180,25 +222,22 @@ export const StudentsPage = () => {
       header: 'Actions',
       key: 'actions',
       align: 'right',
-      cell: (row) => (
-        <Dropdown
-          align="right"
-          trigger={
-            <button className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
-              <MoreVertical className="w-4 h-4" />
-            </button>
-          }
-          items={[
-            {
-              label: 'View Profile',
-              icon: Eye,
-              onClick: () => setSelectedStudentForView(row),
-            },
-            {
-              label: 'Print Report Card',
-              icon: FileText,
-              onClick: () => setReportCardStudent(row),
-            },
+      cell: (row) => {
+        const actionItems = [
+          {
+            label: 'View Profile',
+            icon: Eye,
+            onClick: () => setSelectedStudentForView(row),
+          },
+          {
+            label: 'Print Report Card',
+            icon: FileText,
+            onClick: () => setReportCardStudent(row),
+          },
+        ];
+
+        if (!isTeacher) {
+          actionItems.push(
             {
               label: 'Edit Student',
               icon: Edit2,
@@ -210,38 +249,106 @@ export const StudentsPage = () => {
               icon: Trash2,
               danger: true,
               onClick: () => setStudentToDelete(row),
-            },
-          ]}
-        />
-      ),
+            }
+          );
+        }
+
+        return (
+          <Dropdown
+            align="right"
+            trigger={
+              <button className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
+                <MoreVertical className="w-4 h-4" />
+              </button>
+            }
+            items={actionItems}
+          />
+        );
+      },
     },
   ];
 
-  const paginatedData = students.slice((page - 1) * pageSize, page * pageSize);
+  const { user } = useAuth();
+  const roleStr = String(user?.role_id || user?.role || '').toLowerCase();
+  const isTeacher = roleStr.includes('teacher');
+
+  const teacherClasses = user?.assigned_classes || ['Grade 10 - Science', 'Grade 11 - Science'];
+  const teacherSubject = user?.assigned_subjects?.[0] || 'Mathematics';
+
+  const visibleStudents = isTeacher
+    ? students.filter(s => {
+        return teacherClasses.some(tc => 
+          s.class_name === tc || 
+          s.grade_level === tc ||
+          (tc.includes('10') && (s.grade_level === 'Grade 10' || s.class_id === 'CLS-10SCI')) ||
+          (tc.includes('11') && (s.grade_level === 'Grade 11' || s.class_id === 'CLS-11SCI')) ||
+          (tc.includes('9') && (s.grade_level === 'Grade 9' || s.class_id === 'CLS-9A'))
+        );
+      })
+    : students;
+
+  const paginatedData = visibleStudents.slice((page - 1) * pageSize, page * pageSize);
+  const gradeOptions = isTeacher
+    ? ['Grade 10', 'Grade 11']
+    : ['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'];
 
   return (
     <div className="space-y-6 text-left">
       <PageHeader
-        title="Student Directory"
-        subtitle="Manage student profiles, enrollment details, and academic transcripts"
+        title={isTeacher ? "My Class Roster" : "Student Directory"}
+        subtitle={
+          isTeacher
+            ? `View student profiles and records for your assigned ${teacherSubject} classes (${teacherClasses.join(', ')})`
+            : "Manage student profiles, enrollment details, and academic transcripts"
+        }
         actions={
-          <Button
-            variant="primary"
-            size="md"
-            icon={Plus}
-            onClick={() => setIsAddModalOpen(true)}
-          >
-            Add Student
-          </Button>
+          isTeacher ? (
+            <Badge variant="brand" className="py-1.5 px-3 text-xs font-semibold">
+              <BookOpen className="w-4 h-4 mr-1.5 inline text-brand-400" /> {teacherSubject} Faculty Roster
+            </Badge>
+          ) : (
+            <Button
+              variant="primary"
+              size="md"
+              icon={Plus}
+              onClick={() => setIsAddModalOpen(true)}
+            >
+              Add Student
+            </Button>
+          )
         }
       />
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Students" value={students.length} change="+4.2%" changeType="positive" icon={GraduationCap} iconBg="bg-brand-50 text-brand-600" />
-        <StatCard title="Active Enrolled" value={students.filter(s => s.status === 'Active').length} changeType="positive" icon={GraduationCap} iconBg="bg-emerald-50 text-emerald-600" />
-        <StatCard title="New Admissions" value="84" change="+12" changeType="positive" icon={GraduationCap} iconBg="bg-blue-50 text-blue-600" />
-        <StatCard title="Graduating Cohort" value="112" icon={GraduationCap} iconBg="bg-purple-50 text-purple-600" />
+        <StatCard
+          title={isTeacher ? "Assigned Roster" : "Total Students"}
+          value={visibleStudents.length}
+          change="+4.2%"
+          changeType="positive"
+          icon={GraduationCap}
+          iconBg="bg-brand-50 text-brand-600"
+        />
+        <StatCard
+          title="Active Enrolled"
+          value={visibleStudents.filter(s => s.status === 'Active').length}
+          changeType="positive"
+          icon={GraduationCap}
+          iconBg="bg-emerald-50 text-emerald-600"
+        />
+        <StatCard
+          title={isTeacher ? "Assigned Classes" : "New Admissions"}
+          value={isTeacher ? teacherClasses.length : "84"}
+          changeType="positive"
+          icon={GraduationCap}
+          iconBg="bg-blue-50 text-blue-600"
+        />
+        <StatCard
+          title={isTeacher ? "Subject" : "Graduating Cohort"}
+          value={isTeacher ? teacherSubject : "112"}
+          icon={GraduationCap}
+          iconBg="bg-purple-50 text-purple-600"
+        />
       </div>
 
       {/* Filter Bar */}
@@ -254,7 +361,7 @@ export const StudentsPage = () => {
             label: 'Grade Level',
             value: gradeFilter,
             onChange: setGradeFilter,
-            options: ['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'Grade 13'],
+            options: gradeOptions,
           },
           {
             label: 'Medium',
