@@ -20,15 +20,15 @@ export const TeacherDashboard = () => {
   const navigate = useNavigate();
 
   const todaySchedule = [
-    { period: 'Period 1', time: '08:00 AM - 08:45 AM', subject: 'Mathematics', class_name: 'Grade 10 - Science', room: 'Lab 2B' },
-    { period: 'Period 3', time: '09:30 AM - 10:15 AM', subject: 'Mathematics', class_name: 'Grade 11 - Science', room: 'Room 4A' },
+    { period: 'Period 1', time: '08:00 AM - 08:45 AM', subject: 'Mathematics', class_name: 'Grade 10 - A', room: 'Lab 2B' },
+    { period: 'Period 3', time: '09:30 AM - 10:15 AM', subject: 'Mathematics', class_name: 'Grade 11 - A', room: 'Room 4A' },
     { period: 'Period 5', time: '11:15 AM - 12:00 PM', subject: 'Advanced Maths', class_name: 'Grade 12 - Bio', room: 'Hall 1' },
     { period: 'Period 7', time: '01:30 PM - 02:15 PM', subject: 'Mathematics', class_name: 'Grade 9 - A', room: 'Room 3C' },
   ];
 
   const assignedClasses = [
-    { name: 'Grade 10 - Science', students: 38, subject: 'Mathematics', attendanceToday: '94.7%' },
-    { name: 'Grade 11 - Science', students: 42, subject: 'Mathematics', attendanceToday: '97.6%' },
+    { name: 'Grade 10 - A', students: 38, subject: 'Mathematics', attendanceToday: '94.7%' },
+    { name: 'Grade 11 - A', students: 42, subject: 'Mathematics', attendanceToday: '97.6%' },
     { name: 'Grade 12 - Bio', students: 30, subject: 'Advanced Maths', attendanceToday: '90.0%' },
     { name: 'Grade 9 - A', students: 35, subject: 'Mathematics', attendanceToday: '91.4%' },
   ];

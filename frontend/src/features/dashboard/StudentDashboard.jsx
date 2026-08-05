@@ -34,7 +34,7 @@ export const StudentDashboard = () => {
     last_name: user?.last_name || 'Samaranayake',
     admission_no: user?.admission_no || 'GIC-2024-001',
     grade_level: 'Grade 10',
-    class_name: 'Grade 10 - Science',
+    class_name: 'Grade 10 - A',
     medium: 'English',
     guardian_name: user?.guardian_name || `${user?.last_name || 'Samaranayake'} Guardian`,
     guardian_phone: '0771234567',

@@ -23,7 +23,7 @@ export const AddStudentModal = ({ isOpen, onClose, onSuccess, initialData = null
     admission_no: initialData?.admission_no || `GIC-2026-${Math.floor(100 + Math.random() * 900)}`,
     admission_date: initialData?.admission_date || '2026-01-08',
     grade_level: initialData?.grade_level || 'Grade 10',
-    class_name: initialData?.class_name || 'Grade 10 - Science',
+    class_name: initialData?.class_name || 'Grade 10 - A',
     medium: initialData?.medium || 'English',
     address: initialData?.address || '',
     phone: initialData?.phone || '',
@@ -222,7 +222,7 @@ export const AddStudentModal = ({ isOpen, onClose, onSuccess, initialData = null
               label="Class Name"
               value={formData.class_name}
               onChange={(e) => handleChange('class_name', e.target.value)}
-              options={['Grade 6 - A', 'Grade 6 - B', 'Grade 7 - A', 'Grade 8 - A', 'Grade 9 - A', 'Grade 10 - Science', 'Grade 10 - Commerce', 'Grade 11 - Science', 'Grade 12 - Bio']}
+              options={['Grade 6 - A', 'Grade 6 - B', 'Grade 7 - A', 'Grade 8 - A', 'Grade 9 - A', 'Grade 10 - A', 'Grade 10 - B', 'Grade 11 - A', 'Grade 11 - B', 'Grade 12 - Bio']}
             />
           </div>
         </div>

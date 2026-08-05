@@ -272,7 +272,7 @@ export const StudentsPage = () => {
   const roleStr = String(user?.role_id || user?.role || '').toLowerCase();
   const isTeacher = roleStr.includes('teacher');
 
-  const teacherClasses = user?.assigned_classes || ['Grade 10 - Science', 'Grade 11 - Science'];
+  const teacherClasses = user?.assigned_classes || ['Grade 10 - A', 'Grade 11 - A'];
   const teacherSubject = user?.assigned_subjects?.[0] || 'Mathematics';
 
   const visibleStudents = isTeacher
@@ -280,8 +280,8 @@ export const StudentsPage = () => {
         return teacherClasses.some(tc => 
           s.class_name === tc || 
           s.grade_level === tc ||
-          (tc.includes('10') && (s.grade_level === 'Grade 10' || s.class_id === 'CLS-10SCI')) ||
-          (tc.includes('11') && (s.grade_level === 'Grade 11' || s.class_id === 'CLS-11SCI')) ||
+          (tc.includes('10') && (s.grade_level === 'Grade 10' || s.class_id === 'CLS-10A' || s.class_id === 'CLS-10SCI')) ||
+          (tc.includes('11') && (s.grade_level === 'Grade 11' || s.class_id === 'CLS-11A' || s.class_id === 'CLS-11SCI')) ||
           (tc.includes('9') && (s.grade_level === 'Grade 9' || s.class_id === 'CLS-9A'))
         );
       })

@@ -261,7 +261,7 @@ export const ViewStudentDrawer = ({ isOpen, onClose, student, onEdit, onPrintRep
         <div className="space-y-3">
           <div className="p-3 rounded-xl border border-slate-200 bg-white text-xs">
             <div className="flex items-center justify-between">
-              <span className="font-semibold text-slate-900">Grade 10 - Science</span>
+              <span className="font-semibold text-slate-900">{student.class_name || 'Grade 10 - A'}</span>
               <span className="text-slate-400">2026 Academic Year</span>
             </div>
             <p className="text-slate-500 text-[11px] mt-1">Enrolled on 2026-01-08 • Medium: English</p>

@@ -168,7 +168,7 @@ export const ProfilePage = () => {
         <div className="flex sm:flex-col gap-3 text-right text-xs">
           <div className="p-3 bg-white/10 rounded-xl backdrop-blur-sm border border-white/10">
             <span className="text-brand-300 block text-[10px] uppercase font-bold">Academic Section</span>
-            <span className="font-bold text-white text-sm">Grade 10 - Science</span>
+            <span className="font-bold text-white text-sm">Grade 10 - A</span>
           </div>
         </div>
       </div>

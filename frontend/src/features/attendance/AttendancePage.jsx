@@ -26,7 +26,7 @@ export const AttendancePage = () => {
 
   const [activeTab, setActiveTab] = useState('register');
   const [date, setDate] = useState('2026-07-24');
-  const [selectedClass, setSelectedClass] = useState('CLS-10SCI');
+  const [selectedClass, setSelectedClass] = useState('CLS-10A');
   const [selectedMonth, setSelectedMonth] = useState('2026-07');
   const [records, setRecords] = useState([]);
   const [submitting, setSubmitting] = useState(false);
@@ -92,7 +92,7 @@ export const AttendancePage = () => {
     setSubmitting(true);
     try {
       await attendanceService.saveAttendanceBatch(records);
-      addToast('Attendance Submitted', `Recorded attendance for Grade 10 - Science (${date})`, 'success');
+      addToast('Attendance Submitted', `Recorded attendance for Grade 10 - A (${date})`, 'success');
     } catch (err) {
       addToast('Error', err.message, 'danger');
     } finally {
@@ -186,11 +186,11 @@ export const AttendancePage = () => {
     if (r.class_id === selectedClass || r.class_name === selectedClass) return true;
 
     // Check mapping by selected class section code
-    if (selectedClass === 'CLS-10SCI') {
-      return r.class_id === 'CLS-10SCI' || r.grade_level === 'Grade 10' || ['GIC-2024-001', 'GIC-2024-042', 'GIC-2026-724', 'GIC-2024-055', 'STD-001', 'STD-002', 'STD-011', 'STD-012'].includes(r.admission_no || r.student_id);
+    if (selectedClass === 'CLS-10A' || selectedClass === 'CLS-10SCI') {
+      return r.class_id === 'CLS-10A' || r.class_id === 'CLS-10SCI' || r.grade_level === 'Grade 10' || ['GIC-2024-001', 'GIC-2024-042', 'GIC-2026-724', 'GIC-2024-055', 'STD-001', 'STD-002', 'STD-011', 'STD-012'].includes(r.admission_no || r.student_id);
     }
-    if (selectedClass === 'CLS-11SCI') {
-      return r.class_id === 'CLS-11SCI' || r.grade_level === 'Grade 11' || ['GIC-2023-118', 'GIC-2023-145', 'GIC-2023-162', 'STD-003', 'STD-013', 'STD-014'].includes(r.admission_no || r.student_id);
+    if (selectedClass === 'CLS-11A' || selectedClass === 'CLS-11SCI') {
+      return r.class_id === 'CLS-11A' || r.class_id === 'CLS-11SCI' || r.grade_level === 'Grade 11' || ['GIC-2023-118', 'GIC-2023-145', 'GIC-2023-162', 'STD-003', 'STD-013', 'STD-014'].includes(r.admission_no || r.student_id);
     }
     if (selectedClass === 'CLS-9A') {
       return r.class_id === 'CLS-9A' || r.grade_level === 'Grade 9' || ['GIC-2024-089', 'GIC-2024-092', 'GIC-2024-098', 'STD-004', 'STD-015', 'STD-016'].includes(r.admission_no || r.student_id);
@@ -279,8 +279,8 @@ export const AttendancePage = () => {
                     onChange={(e) => setSelectedClass(e.target.value)}
                     className="text-xs font-semibold border border-slate-300 rounded-lg px-3 py-1.5 bg-white text-slate-800 outline-none"
                   >
-                    <option value="CLS-10SCI">Grade 10 - Science</option>
-                    <option value="CLS-11SCI">Grade 11 - Science</option>
+                    <option value="CLS-10A">Grade 10 - A</option>
+                    <option value="CLS-11A">Grade 11 - A</option>
                     <option value="CLS-9A">Grade 9 - A</option>
                     <option value="CLS-6A">Grade 6 - A</option>
                     <option value="CLS-6B">Grade 6 - B</option>
@@ -290,7 +290,7 @@ export const AttendancePage = () => {
                   </select>
                 ) : (
                   <div className="text-xs font-semibold text-slate-800 bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 inline-block">
-                    Grade 10 - Science
+                    Grade 10 - A
                   </div>
                 )}
               </div>
@@ -383,11 +383,13 @@ export const AttendancePage = () => {
                                   ? 'danger'
                                   : row.status === 'Late'
                                   ? 'warning'
-                                  : 'info'
+                                  : row.status === 'Excused'
+                                  ? 'info'
+                                  : 'secondary'
                               }
                               className="px-3 py-1 text-xs"
                             >
-                              {row.status}
+                              {row.status || 'Not Marked'}
                             </Badge>
                           </div>
                         )}
@@ -425,7 +427,7 @@ export const AttendancePage = () => {
             <FilterBar
               searchPlaceholder="Search student name or admission..."
               filters={[
-                { label: 'Class', options: ['Grade 10 - Science', 'Grade 9 - A'] },
+                { label: 'Class', options: ['Grade 10 - A', 'Grade 9 - A'] },
                 { label: 'Status', options: ['Present', 'Absent', 'Late', 'Excused'] }
               ]}
             />

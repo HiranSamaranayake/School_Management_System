@@ -195,7 +195,7 @@ export const AcademicsPage = () => {
       {/* Add Class Modal */}
       <Modal isOpen={isClassModalOpen} onClose={() => setIsClassModalOpen(false)} title="Add New Class Section">
         <form onSubmit={handleSaveClass} className="space-y-3">
-          <Input label="Class Name" required value={classForm.class_name} onChange={(e) => setClassForm({ ...classForm, class_name: e.target.value })} placeholder="e.g. Grade 10 - Science A" />
+          <Input label="Class Name" required value={classForm.class_name} onChange={(e) => setClassForm({ ...classForm, class_name: e.target.value })} placeholder="e.g. Grade 10 - A" />
           <Select label="Grade Level" value={classForm.grade_level} onChange={(e) => setClassForm({ ...classForm, grade_level: e.target.value })} options={['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12']} />
           <Select label="Medium" value={classForm.medium} onChange={(e) => setClassForm({ ...classForm, medium: e.target.value })} options={['English', 'Sinhala', 'Tamil']} />
           <Input label="Capacity" type="number" value={classForm.capacity} onChange={(e) => setClassForm({ ...classForm, capacity: e.target.value })} />

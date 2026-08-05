@@ -98,7 +98,7 @@ export const TeachersPage = () => {
       key: 'assigned_classes',
       cell: (row) => (
         <div className="text-xs text-slate-700 font-medium truncate max-w-xs">
-          {(row.assigned_classes || []).join(', ') || 'Grade 10 - Science'}
+          {(row.assigned_classes || []).join(', ') || 'Grade 10 - A'}
         </div>
       ),
     },

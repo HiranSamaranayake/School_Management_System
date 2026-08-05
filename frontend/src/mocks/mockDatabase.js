@@ -69,7 +69,7 @@ export const initialTeachers = [
     status: "Active",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80",
     assigned_subjects: ["MAT001"],
-    assigned_classes: ["Grade 10 - Science", "Grade 11 - Science"]
+    assigned_classes: ["Grade 10 - A", "Grade 11 - A"]
   },
   {
     teacher_id: "TCH-002",
@@ -123,7 +123,7 @@ export const initialTeachers = [
     status: "Active",
     avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80",
     assigned_subjects: ["ICT001"],
-    assigned_classes: ["Grade 9 - A", "Grade 10 - Science", "Grade 11 - Science"]
+    assigned_classes: ["Grade 9 - A", "Grade 10 - A", "Grade 11 - A"]
   },
   {
     teacher_id: "TCH-005",
@@ -151,9 +151,9 @@ export const initialClasses = [
   { class_id: "CLS-7A", grade_level: "Grade 7", section: "A", class_name: "Grade 7 - A", medium: "English", capacity: 40, enrolled_count: 35, class_teacher_id: "TCH-003", status: "Active" },
   { class_id: "CLS-8A", grade_level: "Grade 8", section: "A", class_name: "Grade 8 - A", medium: "English", capacity: 40, enrolled_count: 37, class_teacher_id: "TCH-002", status: "Active" },
   { class_id: "CLS-9A", grade_level: "Grade 9", section: "A", class_name: "Grade 9 - A", medium: "English", capacity: 42, enrolled_count: 40, class_teacher_id: "TCH-004", status: "Active" },
-  { class_id: "CLS-10SCI", grade_level: "Grade 10", section: "Science", class_name: "Grade 10 - Science", medium: "English", capacity: 45, enrolled_count: 42, class_teacher_id: "TCH-001", status: "Active" },
-  { class_id: "CLS-10COM", grade_level: "Grade 10", section: "Commerce", class_name: "Grade 10 - Commerce", medium: "Sinhala", capacity: 45, enrolled_count: 39, class_teacher_id: "TCH-005", status: "Active" },
-  { class_id: "CLS-11SCI", grade_level: "Grade 11", section: "Science", class_name: "Grade 11 - Science", medium: "English", capacity: 45, enrolled_count: 44, class_teacher_id: "TCH-004", status: "Active" },
+  { class_id: "CLS-10A", grade_level: "Grade 10", section: "A", class_name: "Grade 10 - A", medium: "English", capacity: 45, enrolled_count: 42, class_teacher_id: "TCH-001", status: "Active" },
+  { class_id: "CLS-10B", grade_level: "Grade 10", section: "B", class_name: "Grade 10 - B", medium: "Sinhala", capacity: 45, enrolled_count: 39, class_teacher_id: "TCH-005", status: "Active" },
+  { class_id: "CLS-11A", grade_level: "Grade 11", section: "A", class_name: "Grade 11 - A", medium: "English", capacity: 45, enrolled_count: 44, class_teacher_id: "TCH-004", status: "Active" },
   { class_id: "CLS-12BIO", grade_level: "Grade 12", section: "Biological Science", class_name: "Grade 12 - Bio", medium: "English", capacity: 35, enrolled_count: 31, class_teacher_id: "TCH-002", status: "Active" },
 ];
 
@@ -179,8 +179,8 @@ export const initialStudents = [
     medium: "English",
     admission_date: "2024-01-10",
     grade_level: "Grade 10",
-    class_name: "Grade 10 - Science",
-    class_id: "CLS-10SCI",
+    class_name: "Grade 10 - A",
+    class_id: "CLS-10A",
     address: "45/A, High Level Road, Nugegoda",
     phone: "+94 77 234 5678",
     guardian_name: "K. Samaranayake",
@@ -201,8 +201,8 @@ export const initialStudents = [
     medium: "English",
     admission_date: "2024-01-12",
     grade_level: "Grade 10",
-    class_name: "Grade 10 - Science",
-    class_id: "CLS-10SCI",
+    class_name: "Grade 10 - A",
+    class_id: "CLS-10A",
     address: "12, Baseline Road, Kirulapone",
     phone: "+94 71 888 2211",
     guardian_name: "Rohan Fernando",
@@ -223,8 +223,8 @@ export const initialStudents = [
     medium: "English",
     admission_date: "2023-01-08",
     grade_level: "Grade 11",
-    class_name: "Grade 11 - Science",
-    class_id: "CLS-11SCI",
+    class_name: "Grade 11 - A",
+    class_id: "CLS-11A",
     address: "88, Marine Drive, Bambalapitiya",
     phone: "+94 75 111 0022",
     guardian_name: "Anusha Silva",
@@ -355,8 +355,8 @@ export const initialStudents = [
     medium: "English",
     admission_date: "2026-01-08",
     grade_level: "Grade 10",
-    class_name: "Grade 10 - Science",
-    class_id: "CLS-10SCI",
+    class_name: "Grade 10 - A",
+    class_id: "CLS-10A",
     address: "148, Colombo 08",
     phone: "+94 70 234 5432",
     guardian_name: "Nilupul Perera",
@@ -377,8 +377,8 @@ export const initialStudents = [
     medium: "English",
     admission_date: "2024-01-14",
     grade_level: "Grade 10",
-    class_name: "Grade 10 - Science",
-    class_id: "CLS-10SCI",
+    class_name: "Grade 10 - A",
+    class_id: "CLS-10A",
     address: "12, Station Road, Nugegoda",
     phone: "+94 77 333 9988",
     guardian_name: "S. Pradeep",
@@ -399,8 +399,8 @@ export const initialStudents = [
     medium: "English",
     admission_date: "2023-01-10",
     grade_level: "Grade 11",
-    class_name: "Grade 11 - Science",
-    class_id: "CLS-11SCI",
+    class_name: "Grade 11 - A",
+    class_id: "CLS-11A",
     address: "56, Galle Road, Dehiwala",
     phone: "+94 71 555 7711",
     guardian_name: "K. Pathirana",
@@ -421,8 +421,8 @@ export const initialStudents = [
     medium: "English",
     admission_date: "2023-01-12",
     grade_level: "Grade 11",
-    class_name: "Grade 11 - Science",
-    class_id: "CLS-11SCI",
+    class_name: "Grade 11 - A",
+    class_id: "CLS-11A",
     address: "89, Main Street, Maharagama",
     phone: "+94 76 888 3322",
     guardian_name: "Sunil Hansika",
@@ -568,45 +568,45 @@ export const initialStudents = [
 ];
 
 export const initialTeacherAllocations = [
-  { allocation_id: "ALLOC-01", teacher_id: "TCH-001", teacher_name: "Aruni Jayasinghe", class_id: "CLS-10SCI", class_name: "Grade 10 - Science", subject_id: "SUB-001", subject_code: "MAT001", subject_name: "Mathematics", academic_year: "2026" },
-  { allocation_id: "ALLOC-02", teacher_id: "TCH-002", teacher_name: "Bandula Gunawardena", class_id: "CLS-10SCI", class_name: "Grade 10 - Science", subject_id: "SUB-003", subject_code: "SCI001", subject_name: "General Science", academic_year: "2026" },
-  { allocation_id: "ALLOC-03", teacher_id: "TCH-003", teacher_name: "Champa Ranasinghe", class_id: "CLS-10SCI", class_name: "Grade 10 - Science", subject_id: "SUB-002", subject_code: "ENG001", subject_name: "English Language & Literature", academic_year: "2026" },
-  { allocation_id: "ALLOC-04", teacher_id: "TCH-004", teacher_name: "Dinesh Weerasinghe", class_id: "CLS-10SCI", class_name: "Grade 10 - Science", subject_id: "SUB-004", subject_code: "ICT001", subject_name: "Information & Communication Technology", academic_year: "2026" },
+  { allocation_id: "ALLOC-01", teacher_id: "TCH-001", teacher_name: "Aruni Jayasinghe", class_id: "CLS-10A", class_name: "Grade 10 - A", subject_id: "SUB-001", subject_code: "MAT001", subject_name: "Mathematics", academic_year: "2026" },
+  { allocation_id: "ALLOC-02", teacher_id: "TCH-002", teacher_name: "Bandula Gunawardena", class_id: "CLS-10A", class_name: "Grade 10 - A", subject_id: "SUB-003", subject_code: "SCI001", subject_name: "General Science", academic_year: "2026" },
+  { allocation_id: "ALLOC-03", teacher_id: "TCH-003", teacher_name: "Champa Ranasinghe", class_id: "CLS-10A", class_name: "Grade 10 - A", subject_id: "SUB-002", subject_code: "ENG001", subject_name: "English Language & Literature", academic_year: "2026" },
+  { allocation_id: "ALLOC-04", teacher_id: "TCH-004", teacher_name: "Dinesh Weerasinghe", class_id: "CLS-10A", class_name: "Grade 10 - A", subject_id: "SUB-004", subject_code: "ICT001", subject_name: "Information & Communication Technology", academic_year: "2026" },
 ];
 
 export const initialAttendanceRecords = [
-  { attendance_id: "ATT-1001", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-24", status: "Present", remarks: "" },
-  { attendance_id: "ATT-1002", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_id: "CLS-10SCI", attendance_date: "2026-07-24", status: "Present", remarks: "" },
-  { attendance_id: "ATT-1003", student_id: "STD-003", student_name: "Sahan Silva", admission_no: "GIC-2023-118", class_id: "CLS-11SCI", attendance_date: "2026-07-24", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1001", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10A", attendance_date: "2026-07-24", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1002", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_id: "CLS-10A", attendance_date: "2026-07-24", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1003", student_id: "STD-003", student_name: "Sahan Silva", admission_no: "GIC-2023-118", class_id: "CLS-11A", attendance_date: "2026-07-24", status: "Present", remarks: "" },
   { attendance_id: "ATT-1004", student_id: "STD-004", student_name: "Dinithi Jayawardena", admission_no: "GIC-2024-089", class_id: "CLS-9A", attendance_date: "2026-07-24", status: "Late", remarks: "Traffic delay at Nugegoda" },
   { attendance_id: "ATT-1005", student_id: "STD-005", student_name: "Kasun Bandara", admission_no: "GIC-2022-015", class_id: "CLS-12BIO", attendance_date: "2026-07-24", status: "Absent", remarks: "Sick leave - Doctor note submitted" },
   { attendance_id: "ATT-1006", student_id: "STD-006", student_name: "Tharushi Perera", admission_no: "GIC-2025-002", class_id: "CLS-6A", attendance_date: "2026-07-24", status: "Present", remarks: "" },
   { attendance_id: "ATT-1007", student_id: "STD-007", student_name: "Chamod Fernando", admission_no: "GIC-2025-019", class_id: "CLS-6B", attendance_date: "2026-07-24", status: "Excused", remarks: "Sports Competition" },
-  { attendance_id: "ATT-1008", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-23", status: "Present", remarks: "" },
-  { attendance_id: "ATT-1009", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-22", status: "Present", remarks: "" },
-  { attendance_id: "ATT-1010", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-21", status: "Late", remarks: "Bus delay" },
-  { attendance_id: "ATT-1011", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-20", status: "Present", remarks: "" },
-  { attendance_id: "ATT-1012", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-17", status: "Absent", remarks: "Medical leave" },
-  { attendance_id: "ATT-1013", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10SCI", attendance_date: "2026-07-16", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1008", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10A", attendance_date: "2026-07-23", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1009", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10A", attendance_date: "2026-07-22", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1010", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10A", attendance_date: "2026-07-21", status: "Late", remarks: "Bus delay" },
+  { attendance_id: "ATT-1011", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10A", attendance_date: "2026-07-20", status: "Present", remarks: "" },
+  { attendance_id: "ATT-1012", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10A", attendance_date: "2026-07-17", status: "Absent", remarks: "Medical leave" },
+  { attendance_id: "ATT-1013", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_id: "CLS-10A", attendance_date: "2026-07-16", status: "Present", remarks: "" },
 ];
 
 
 export const initialExams = [
-  { exam_id: "EXM-2026-T1", exam_name: "First Term Examination 2026", term: "First Term", academic_year: "2026", start_date: "2026-03-15", end_date: "2026-03-25", classes: ["Grade 10 - Science", "Grade 11 - Science", "Grade 9 - A"], status: "Published" },
-  { exam_id: "EXM-2026-MID", exam_name: "Mid-Term Evaluation 2026", term: "Second Term", academic_year: "2026", start_date: "2026-06-20", end_date: "2026-06-28", classes: ["Grade 10 - Science", "Grade 6 - A", "Grade 8 - A"], status: "Ongoing" },
-  { exam_id: "EXM-2026-T2", exam_name: "Second Term Assessment 2026", term: "Second Term", academic_year: "2026", start_date: "2026-09-10", end_date: "2026-09-20", classes: ["Grade 10 - Science", "Grade 11 - Science"], status: "Scheduled" },
+  { exam_id: "EXM-2026-T1", exam_name: "First Term Examination 2026", term: "First Term", academic_year: "2026", start_date: "2026-03-15", end_date: "2026-03-25", classes: ["Grade 10 - A", "Grade 11 - A", "Grade 9 - A"], status: "Published" },
+  { exam_id: "EXM-2026-MID", exam_name: "Mid-Term Evaluation 2026", term: "Second Term", academic_year: "2026", start_date: "2026-06-20", end_date: "2026-06-28", classes: ["Grade 10 - A", "Grade 6 - A", "Grade 8 - A"], status: "Ongoing" },
+  { exam_id: "EXM-2026-T2", exam_name: "Second Term Assessment 2026", term: "Second Term", academic_year: "2026", start_date: "2026-09-10", end_date: "2026-09-20", classes: ["Grade 10 - A", "Grade 11 - A"], status: "Scheduled" },
 ];
 
 export const initialExamResults = [
-  { result_id: "RES-001", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-001", subject_name: "Mathematics", marks: 92, grade: "A+", remarks: "Outstanding performance" },
-  { result_id: "RES-002", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-002", subject_name: "English", marks: 88, grade: "A+", remarks: "Excellent essay writing" },
-  { result_id: "RES-003", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-003", subject_name: "General Science", marks: 85, grade: "A+", remarks: "Strong practical score" },
-  { result_id: "RES-004", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - Science", subject_id: "SUB-004", subject_name: "ICT", marks: 95, grade: "A+", remarks: "Top in class" },
+  { result_id: "RES-001", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - A", subject_id: "SUB-001", subject_name: "Mathematics", marks: 92, grade: "A+", remarks: "Outstanding performance" },
+  { result_id: "RES-002", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - A", subject_id: "SUB-002", subject_name: "English", marks: 88, grade: "A+", remarks: "Excellent essay writing" },
+  { result_id: "RES-003", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - A", subject_id: "SUB-003", subject_name: "General Science", marks: 85, grade: "A+", remarks: "Strong practical score" },
+  { result_id: "RES-004", exam_id: "EXM-2026-T1", student_id: "STD-001", student_name: "Hiran Samaranayake", admission_no: "GIC-2024-001", class_name: "Grade 10 - A", subject_id: "SUB-004", subject_name: "ICT", marks: 95, grade: "A+", remarks: "Top in class" },
 
-  { result_id: "RES-005", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - Science", subject_id: "SUB-001", subject_name: "Mathematics", marks: 78, grade: "A", remarks: "Very good" },
-  { result_id: "RES-006", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - Science", subject_id: "SUB-002", subject_name: "English", marks: 91, grade: "A+", remarks: "Top score in literature" },
-  { result_id: "RES-007", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - Science", subject_id: "SUB-003", subject_name: "General Science", marks: 72, grade: "B", remarks: "Good effort" },
-  { result_id: "RES-008", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - Science", subject_id: "SUB-004", subject_name: "ICT", marks: 84, grade: "A", remarks: "Consistently good" },
+  { result_id: "RES-005", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - A", subject_id: "SUB-001", subject_name: "Mathematics", marks: 78, grade: "A", remarks: "Very good" },
+  { result_id: "RES-006", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - A", subject_id: "SUB-002", subject_name: "English", marks: 91, grade: "A+", remarks: "Top score in literature" },
+  { result_id: "RES-007", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - A", subject_id: "SUB-003", subject_name: "General Science", marks: 72, grade: "B", remarks: "Good effort" },
+  { result_id: "RES-008", exam_id: "EXM-2026-T1", student_id: "STD-002", student_name: "Kavindi Fernando", admission_no: "GIC-2024-042", class_name: "Grade 10 - A", subject_id: "SUB-004", subject_name: "ICT", marks: 84, grade: "A", remarks: "Consistently good" },
 ];
 
 export const initialGradingScale = [
@@ -656,14 +656,14 @@ export const initialRolesPermissions = {
 
 export const initialAuditLogs = [
   { log_id: "LOG-901", timestamp: "2026-07-24 08:30:12", user: "James Fernando", module: "Auth", action: "User Login", description: "Successfully authenticated from browser session", ip_address: "192.168.1.45" },
-  { log_id: "LOG-902", timestamp: "2026-07-23 16:45:00", user: "Aruni Jayasinghe", module: "Attendance", action: "Attendance Submitted", description: "Recorded attendance for Grade 10 - Science (36 Present)", ip_address: "192.168.1.88" },
+  { log_id: "LOG-902", timestamp: "2026-07-23 16:45:00", user: "Aruni Jayasinghe", module: "Attendance", action: "Attendance Submitted", description: "Recorded attendance for Grade 10 - A (36 Present)", ip_address: "192.168.1.88" },
   { log_id: "LOG-903", timestamp: "2026-07-23 14:12:33", user: "James Fernando", module: "Students", action: "Student Enrolled", description: "Enrolled new student Tharushi Perera (GIC-2025-002)", ip_address: "192.168.1.45" },
   { log_id: "LOG-904", timestamp: "2026-07-22 11:05:19", user: "James Fernando", module: "Examinations", action: "Result Published", description: "Published official results for First Term Examination 2026", ip_address: "192.168.1.45" },
   { log_id: "LOG-905", timestamp: "2026-07-21 09:15:40", user: "James Fernando", module: "Administration", action: "Role Permissions Updated", description: "Updated permissions matrix for Teacher role", ip_address: "192.168.1.45" },
 ];
 
 export const initialNotifications = [
-  { id: "NT-001", title: "Attendance Submitted", message: "Attendance for Grade 10 - Science has been submitted by Mrs. Aruni Jayasinghe.", category: "Attendance", time: "10 minutes ago", unread: true },
+  { id: "NT-001", title: "Attendance Submitted", message: "Attendance for Grade 10 - A has been submitted by Mrs. Aruni Jayasinghe.", category: "Attendance", time: "10 minutes ago", unread: true },
   { id: "NT-002", title: "New Student Admission", message: "Tharushi Perera has been enrolled into Grade 6 - A.", category: "Users", time: "1 hour ago", unread: true },
   { id: "NT-003", title: "Exam Results Ready", message: "First Term Examination results have been uploaded for review.", category: "Academics", time: "3 hours ago", unread: false },
   { id: "NT-004", title: "Teacher Allocation Updated", message: "Mr. Bandula Gunawardena assigned to Grade 12 - Bio Chemistry.", category: "System", time: "Yesterday", unread: false },

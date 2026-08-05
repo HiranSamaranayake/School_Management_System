@@ -14,7 +14,7 @@ export const CreateExamModal = ({ isOpen, onClose, onSuccess }) => {
     term: 'Term 1',
     start_date: new Date().toISOString().substring(0, 10),
     end_date: new Date(Date.now() + 14 * 86400000).toISOString().substring(0, 10),
-    classes: ['Grade 10 - Science', 'Grade 11 - Science'],
+    classes: ['Grade 10 - A', 'Grade 11 - A'],
     status: 'Upcoming'
   });
 

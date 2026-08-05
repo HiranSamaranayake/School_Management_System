@@ -74,7 +74,7 @@ export const QuickCreateModal = () => {
     >
       {activeType === 'class' && (
         <form onSubmit={handleCreateClass} className="space-y-3 text-left">
-          <Input label="Class Name" required value={className} onChange={(e) => setClassName(e.target.value)} placeholder="e.g. Grade 10 - Science B" />
+          <Input label="Class Name" required value={className} onChange={(e) => setClassName(e.target.value)} placeholder="e.g. Grade 10 - B" />
           <Select label="Grade Level" value={gradeLevel} onChange={(e) => setGradeLevel(e.target.value)} options={['Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'Grade 13']} />
           <Select label="Medium" value={medium} onChange={(e) => setMedium(e.target.value)} options={['English', 'Sinhala', 'Tamil']} />
           <Input label="Student Capacity" type="number" value={capacity} onChange={(e) => setCapacity(e.target.value)} />

@@ -76,7 +76,7 @@ export const ViewTeacherDrawer = ({ isOpen, onClose, teacher, onEdit }) => {
 
       {activeTab === 'classes' && (
         <div className="space-y-2 text-xs">
-          {(teacher.assigned_classes || ["Grade 10 - Science", "Grade 11 - Science"]).map((cls, idx) => (
+          {(teacher.assigned_classes || ["Grade 10 - A", "Grade 11 - A"]).map((cls, idx) => (
             <div key={idx} className="p-3 bg-white border border-slate-200 rounded-xl flex items-center justify-between">
               <span className="font-semibold text-slate-900 flex items-center gap-2">
                 <Layers className="w-4 h-4 text-brand-600" /> {cls}
@@ -102,7 +102,7 @@ export const ViewTeacherDrawer = ({ isOpen, onClose, teacher, onEdit }) => {
 
       {activeTab === 'activity' && (
         <div className="text-xs text-slate-500 space-y-2">
-          <p>• Submitted attendance for Grade 10 - Science today at 08:45 AM</p>
+          <p>• Submitted attendance for Grade 10 - A today at 08:45 AM</p>
           <p>• Uploaded term marks for Mathematics on 2026-07-22</p>
         </div>
       )}

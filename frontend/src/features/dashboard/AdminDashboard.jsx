@@ -63,7 +63,7 @@ export const AdminDashboard = () => {
   ];
 
   const recentActivity = [
-    { id: 1, title: 'Attendance Submitted', time: '10 minutes ago', desc: 'Grade 10 - Science recorded by Mrs. Aruni Jayasinghe', type: 'attendance' },
+    { id: 1, title: 'Attendance Submitted', time: '10 minutes ago', desc: 'Grade 10 - A recorded by Mrs. Aruni Jayasinghe', type: 'attendance' },
     { id: 2, title: 'New Student Enrolled', time: '1 hour ago', desc: 'Tharushi Perera enrolled in Grade 6 - A', type: 'student' },
     { id: 3, title: 'Exam Results Published', time: '3 hours ago', desc: 'First Term 2026 Mathematics results published', type: 'exam' },
     { id: 4, title: 'Teacher Assigned', time: 'Yesterday', desc: 'Mr. Bandula Gunawardena assigned to Grade 12 - Bio', type: 'teacher' },

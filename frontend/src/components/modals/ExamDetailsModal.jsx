@@ -98,7 +98,7 @@ export const ExamDetailsModal = ({ isOpen, onClose, exam, onDeleteSuccess }) => 
             <Layers className="w-4 h-4 text-purple-600" /> Eligible Classes
           </span>
           <div className="flex flex-wrap gap-1.5">
-            {(exam.classes || ['Grade 10 - Science', 'Grade 11 - Science']).map((cls, idx) => (
+            {(exam.classes || ['Grade 10 - A', 'Grade 11 - A']).map((cls, idx) => (
               <span key={idx} className="px-2.5 py-1 bg-purple-50 border border-purple-200 text-purple-700 font-semibold rounded-lg text-xs">
                 {cls}
               </span>

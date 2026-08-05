@@ -217,7 +217,7 @@ export const mockHandlers = {
       name: `${firstName} ${lastName}`,
       admission_no: studentData.admission_no || `GIC-2026-${Math.floor(100 + Math.random() * 900)}`,
       grade_level: studentData.grade_level || 'Grade 10',
-      class_name: studentData.class_name || 'Grade 10 - Science',
+      class_name: studentData.class_name || 'Grade 10 - A',
       medium: studentData.medium || 'English',
       guardian_name: studentData.guardian_name || 'Guardian',
       guardian_phone: studentData.phone || studentData.guardian_phone || '0771234567',
@@ -325,7 +325,7 @@ export const mockHandlers = {
       'GIC-2026-724': 'Hashen Perera',
     };
 
-    const targetClass = classId || 'CLS-10SCI';
+    const targetClass = classId || 'CLS-10A';
 
     // Get enrolled students for the target class section
     const matchingStudents = store.students.filter(s => {
@@ -333,8 +333,8 @@ export const mockHandlers = {
       return (
         s.class_id === targetClass ||
         s.class_name === targetClass ||
-        (targetClass === 'CLS-10SCI' && (s.grade_level === 'Grade 10' || s.class_id === 'CLS-10SCI')) ||
-        (targetClass === 'CLS-11SCI' && (s.grade_level === 'Grade 11' || s.class_id === 'CLS-11SCI')) ||
+        (targetClass === 'CLS-10A' && (s.grade_level === 'Grade 10' || s.class_id === 'CLS-10A' || s.class_id === 'CLS-10SCI')) ||
+        (targetClass === 'CLS-11A' && (s.grade_level === 'Grade 11' || s.class_id === 'CLS-11A' || s.class_id === 'CLS-11SCI')) ||
         (targetClass === 'CLS-9A' && (s.grade_level === 'Grade 9' || s.class_id === 'CLS-9A')) ||
         (targetClass === 'CLS-6A' && (s.grade_level === 'Grade 6' && s.class_name?.includes('A'))) ||
         (targetClass === 'CLS-6B' && (s.grade_level === 'Grade 6' && s.class_name?.includes('B'))) ||
@@ -345,7 +345,7 @@ export const mockHandlers = {
 
     const attendanceDate = date || '2026-07-24';
 
-    return matchingStudents.map((s, idx) => {
+    return matchingStudents.map((s) => {
       const realName = knownNames[s.admission_no] || knownNames[s.student_id] || `${s.first_name || ''} ${s.last_name || ''}`.trim() || 'Student';
 
       const existing = (store.attendanceRecords || []).find(r => 
@@ -359,8 +359,8 @@ export const mockHandlers = {
         admission_no: s.admission_no,
         class_id: s.class_id || targetClass,
         attendance_date: attendanceDate,
-        status: existing?.status || (idx % 3 === 1 ? 'Absent' : idx % 3 === 2 ? 'Late' : 'Present'),
-        remarks: existing?.remarks || (idx % 3 === 1 ? 'Sick leave' : idx % 3 === 2 ? 'Traffic delay' : '')
+        status: existing ? existing.status : '',
+        remarks: existing ? (existing.remarks || '') : ''
       };
     });
   },
@@ -386,7 +386,7 @@ export const mockHandlers = {
     const newExam = {
       ...examData,
       exam_id: `EXM-2026-T${store.exams.length + 1}`,
-      classes: examData.classes || ['Grade 10 - Science', 'Grade 11 - Science'],
+      classes: examData.classes || ['Grade 10 - A', 'Grade 11 - A'],
       status: examData.status || 'Upcoming'
     };
     store.exams = [newExam, ...store.exams];

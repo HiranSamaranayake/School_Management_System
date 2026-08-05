@@ -85,7 +85,7 @@ export const ExaminationsPage = () => {
     setSubmittingMarks(true);
     try {
       await examinationService.saveExamResults(marksGrid);
-      addToast('Results Published', 'Published official examination marks for Grade 10 - Science', 'success');
+      addToast('Results Published', 'Published official examination marks for Grade 10 - A', 'success');
     } catch (e) {
       addToast('Error', e.message, 'danger');
     } finally {
@@ -252,7 +252,7 @@ export const ExaminationsPage = () => {
         <div className="space-y-6">
           <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-subtle grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Select label="Select Examination" value={selectedExam} onChange={(e) => setSelectedExam(e.target.value)} options={['First Term Examination 2026', 'Mid-Term Evaluation 2026']} />
-            <Select label="Select Class" value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} options={['Grade 10 - Science', 'Grade 11 - Science', 'Grade 9 - A']} />
+            <Select label="Select Class" value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} options={['Grade 10 - A', 'Grade 11 - A', 'Grade 9 - A']} />
             <Select label="Select Subject" value={selectedSubject} onChange={(e) => setSelectedSubject(e.target.value)} options={['MAT001 - Mathematics', 'ENG001 - English', 'SCI001 - Science', 'ICT001 - ICT']} />
           </div>
 
@@ -343,7 +343,7 @@ export const ExaminationsPage = () => {
                       first_name: (isStudent ? currentStudentName : r.student_name)?.split(' ')[0] || '',
                       last_name: (isStudent ? currentStudentName : r.student_name)?.split(' ').slice(1).join(' ') || '',
                       admission_no: isStudent ? currentAdmissionNo : r.admission_no,
-                      class_name: 'Grade 10 - Mathematics',
+                      class_name: 'Grade 10 - A',
                       medium: 'English'
                     })}
                   >
