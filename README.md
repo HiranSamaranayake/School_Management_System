@@ -1,4 +1,4 @@
-# EduSphere - Next-Gen Multi-Tenant School Management SaaS
+# EduSphere  Next Gen Multi Tenant School Management SaaS
 
 Welcome to **EduSphere**, a comprehensive, enterprise-grade School Management SaaS System built for K-12 schools, colleges, and educational institutions.
 
